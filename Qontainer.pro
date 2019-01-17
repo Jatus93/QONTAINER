@@ -26,11 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    IoT/iot.cpp \
+    IoT/switch.cpp
 
 HEADERS += \
         mainwindow.h \
-    container.h
+    container.h \
+    heap.h \
+    IoT/iot.h \
+    IoT/switch.h
 
 FORMS += \
         mainwindow.ui
