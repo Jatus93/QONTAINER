@@ -28,14 +28,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     IoT/iot.cpp \
-    IoT/switch.cpp
+    IoT/switch.cpp \
+    switchtest.cpp
 
 HEADERS += \
         mainwindow.h \
     container.h \
     heap.h \
     IoT/iot.h \
-    IoT/switch.h
+    IoT/switch.h \
+    switchtest.h
 
 FORMS += \
         mainwindow.ui
