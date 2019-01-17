@@ -1,15 +1,14 @@
 #include "switch.h"
 std::string Switch::lClass = "switch";
-int Switch::states[] = {0,1};
+QJsonObject Switch::states{{"on",1},{"off",0}};
 Switch::Switch(std::string& fSerial, std::string& fRoom):IoT(fSerial,lClass,fRoom){}
 
-const void* Switch::getDeviceInstruction() const{
-    return states;
+const QJsonObject* Switch::getDeviceInstruction() const{
+    return &states;
 }
-const void *Switch::getStatus() const{
-    return &status;
+const QJsonObject *Switch::getStatus() const{
+    return new QJsonObject{{"status",status}};
 }
 
-void Switch::setDevice(void* instruction){
-
+void Switch::setDevice(QJsonObject* instruction){
 }

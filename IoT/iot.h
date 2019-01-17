@@ -1,6 +1,7 @@
 #ifndef IOT_H
 #define IOT_H
 #include <iostream>
+#include <QJsonObject>
 class IoT{
 protected:
     std::string serial;
@@ -12,9 +13,9 @@ public:
     const std::string& getSerial() const;
     const std::string& getClass() const;
     const std::string& getRoom() const;
-    virtual const void* getDeviceInstruction() const = 0;
-    virtual const void* getStatus() const = 0;
-    virtual void setDevice(void* instruction) = 0;
+    virtual const QJsonObject* getDeviceInstruction() const = 0;
+    virtual const QJsonObject* getStatus() const = 0;
+    virtual void setDevice(QJsonObject* instruction) = 0;
     virtual ~IoT() = default;
 
 };

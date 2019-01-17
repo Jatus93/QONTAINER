@@ -4,14 +4,14 @@
 
 class Switch : public IoT
 {
-    static int states[];
+    static QJsonObject states;
     static std::string lClass;
     int status; // can be on or off
 public:
     Switch(std::string& fSerial, std::string& fRoom);
-    const void* getDeviceInstruction() const;
-    const void* getStatus() const;
-    void setDevice(void* instruction);
+    const QJsonObject* getDeviceInstruction() const;
+    const QJsonObject* getStatus() const;
+    void setDevice(QJsonObject* instruction);
 };
 
 #endif // SWITCH_H

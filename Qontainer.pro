@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,7 +29,7 @@ SOURCES += \
         mainwindow.cpp \
     IoT/iot.cpp \
     IoT/switch.cpp \
-    switchtest.cpp
+    Tests/switchtest.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -37,7 +37,7 @@ HEADERS += \
     heap.h \
     IoT/iot.h \
     IoT/switch.h \
-    switchtest.h
+    Tests/switchtest.h
 
 FORMS += \
         mainwindow.ui
