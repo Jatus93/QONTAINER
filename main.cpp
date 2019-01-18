@@ -1,9 +1,5 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "Tests/switchtest.h"
-#include "IoT/iot.h"
-#include "IoT/switch.h"
-
 /**int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -12,4 +8,8 @@
 
     return a.exec();
 }*/
-QTEST_MAIN(SwitchTest)
+
+int main(int argc, char *argv[])
+{
+    return 0;
+}
