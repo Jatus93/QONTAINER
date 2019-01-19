@@ -1,4 +1,33 @@
-#include "tst_test_switch.h"
+#include <QtTest>
+#include <iot.h>
+#include <switch.h>
+
+// add necessary includes here
+
+class test_Switch : public QObject
+{
+    Q_OBJECT
+    static std::string serial;
+    static std::string room;
+    static Switch *button;
+
+public:
+    test_Switch();
+    ~test_Switch();
+
+private slots:
+    void initTestCase();
+    void cleanupTestCase();
+    void test_constructor();
+    void test_serial();
+    void test_room();
+    void test_class();
+    void test_Instruction();
+    void test_getStatus();
+    void test_setDevice();
+    void test_JsonConstructor();
+
+};
 
 std::string test_Switch::serial = "AAAAAAAAA";
 std::string test_Switch::room = "room0";
@@ -14,6 +43,7 @@ test_Switch::~test_Switch()
 
 }
 
+
 void test_Switch::initTestCase()
 {
 
@@ -21,7 +51,7 @@ void test_Switch::initTestCase()
 
 void test_Switch::cleanupTestCase()
 {
-
+    delete button;
 }
 
 void test_Switch::test_constructor(){
@@ -43,26 +73,26 @@ void test_Switch::test_Instruction(){
 
 void test_Switch::test_getStatus(){
     QJsonObject status = button->getStatus().object();
-    QVERIFY(status.value("power").toString()=="off");
+    QVERIFY(status.value("power").toInt()==0);
 }
 void test_Switch::test_setDevice(){
-    QJsonDocument toSet = QJsonDocument::fromRawData("{\"power\":\"on\"}",0);
+    QJsonDocument toSet = QJsonDocument::fromJson("{\"power\":1}");
     button->setDevice(toSet);
     QJsonObject status = button->getStatus().object();
-    QVERIFY(status.value("power").toString()=="on");
+    QVERIFY(status.value("power").toInt()==1);
 }
 
 void test_Switch::test_JsonConstructor(){
-    QJsonDocument init = QJsonDocument::fromRawData("{\"serial\":\"BBBBB\",\"room\":\"room1\",\"status\":{\"power\":\"on\"}}",0);
+    QJsonDocument init = QJsonDocument::fromJson("{\"serial\":\"BBBBB\",\"room\":\"room1\",\"status\":{\"power\":1}}");
     delete button;
     button = new Switch(init);
     QVERIFY(button->getSerial()=="BBBBB");
     QVERIFY(button->getRoom()=="room1");
     QJsonObject status = button->getStatus().object();
-    std::cout << status.value("power").toString("empty").toStdString()<<'\n';
-    QVERIFY(status.value("power").toString()=="on");
+    QVERIFY(status.value("power").toInt()==1);
 
 }
+
 QTEST_APPLESS_MAIN(test_Switch)
 
-//#include "tst_test_switch.moc"
+#include "tst_test_switch.moc"

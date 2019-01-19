@@ -6,16 +6,17 @@
 
 class Switch : public IoT
 {
-    static QJsonDocument states;
+private:
     static std::string lClass;
-    static std::string rawStates;
-    static int size;
-    QJsonObject status; // power,on or power,off
+    static QString rawStates;
+    static QJsonDocument states;
+    static constexpr int min = 0;
+    static constexpr int max = 1;
+
 public:
-    Switch(std::string& fSerial, std::string& fRoom);
+    Switch(const std::string& fSerial, const std::string& fRoom, const std::string& fName="");
     Switch(const QJsonDocument& initializer);
-    const QJsonDocument& getDeviceInstruction() const;
-    const QJsonDocument& getStatus() const;
+    static const QJsonDocument& getDeviceInstruction();
     void setDevice(const QJsonDocument& instruction);
 };
 

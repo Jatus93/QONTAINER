@@ -1,7 +1,4 @@
-language: C++
-
-install:
- - sudo apt-get install qt5*
+language: c++
 
 script:
  - qmake Qontainer.pro
