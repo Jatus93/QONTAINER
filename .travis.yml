@@ -3,7 +3,7 @@ dist: xenial
 before_install:
   - sudo add-apt-repository ppa:beineri/opt-qt-5.11.0-xenial -y
   - sudo apt-get update -q
-  - sudo apt-get install qt5*
+  - sudo apt-get install qt5* -y
 
 script:
  - qmake Qontainer.pro
