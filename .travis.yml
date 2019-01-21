@@ -1,11 +1,9 @@
 language: cpp
 dist: xenial
-addons:
-    apt:
-        sources:
-            - ppa:beineri/opt-qt-5.11.0-xenial
-        packages:
-            - qt511base
+before_install:
+  - sudo add-apt-repository ppa:beineri/opt-qt-5.11.0-xenial
+  - sudo apt-get update -q
+  - sudo apt-get install qt5*
 
 script:
  - qmake Qontainer.pro
