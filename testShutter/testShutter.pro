@@ -6,13 +6,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=  tst_test_switch.cpp
+SOURCES +=  tst_test_shutter.cpp
 
 unix:!macx: LIBS += -L$$OUT_PWD/../IoT/ -lIoT
 
-INCLUDEPATH += $$PWD/../IoT \
-                $$PWD/../IoT/switch
-DEPENDPATH += $$PWD/../IoT \
-            $$PWD/../IoT/switch
+INCLUDEPATH += $$PWD/../IoT/shutter
+DEPENDPATH += $$PWD/../IoT/shutter
 
 unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoT/libIoT.a

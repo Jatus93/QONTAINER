@@ -1,6 +1,5 @@
 #include <QtTest>
-#include <iot.h>
-#include <switch.h>
+#include <switch/switch.h>
 
 // add necessary includes here
 
@@ -26,7 +25,7 @@ private slots:
     void test_getStatus();
     void test_setDevice();
     void test_JsonConstructor();
-
+    void test_incorrectValueException();
 };
 
 std::string test_Switch::serial = "AAAAAAAAA";
@@ -56,6 +55,7 @@ void test_Switch::cleanupTestCase()
 
 void test_Switch::test_constructor(){
     button = new Switch(serial,room);
+    QVERIFY(button!=nullptr);
 }
 
 void test_Switch::test_serial(){
@@ -69,6 +69,8 @@ void test_Switch::test_class(){
 }
 void test_Switch::test_Instruction(){
     QJsonDocument instructions = button->getDeviceInstruction();
+    QVERIFY(instructions.object().value("power").toObject().value("min").toInt() == 0);
+    QVERIFY(instructions.object().value("power").toObject().value("max").toInt() == 0);
 }
 
 void test_Switch::test_getStatus(){
@@ -93,6 +95,14 @@ void test_Switch::test_JsonConstructor(){
 
 }
 
+void test_Switch::test_incorrectValueException(){
+    std::string error = "value is not valid";
+    try{
+        button->setDevice(QJsonDocument::fromJson("{\"power\":10}"));
+    }catch(const std::invalid_argument& e){
+        QCOMPARE(e.what(),error);
+    }
+}
 QTEST_APPLESS_MAIN(test_Switch)
 
 #include "tst_test_switch.moc"

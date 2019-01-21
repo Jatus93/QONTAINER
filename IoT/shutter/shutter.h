@@ -1,6 +1,6 @@
 #ifndef SHUTTER_H
 #define SHUTTER_H
-#include "switch.h"
+#include "../iot.h"
 
 class Shutter : public IoT
 {
@@ -14,8 +14,8 @@ private:
 public:
     Shutter(const std::string& fSerial, const std::string& fRoom, const std::string& fName="");
     Shutter(const QJsonDocument& initializer);
-    static const QJsonDocument& getDeviceInstruction();
-    void setDevice(const QJsonDocument& instruction);
+    const QJsonDocument& getDeviceInstruction() const;
+    void setDevice(const QJsonDocument& instruction) noexcept(false);
 };
 
 #endif // SHUTTER_H

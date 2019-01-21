@@ -23,14 +23,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         iot.cpp \
-    switch.cpp \
-    shutter.cpp
+    switch/switch.cpp \
+    shutter/shutter.cpp
 
 HEADERS += \
         iot.h \
-    switch.h \
-    shutter.h
+    switch/switch.h \
+    shutter/shutter.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+DISTFILES += \
+    shutter/config.json \
+    switch/config.json

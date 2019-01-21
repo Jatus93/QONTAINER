@@ -1,8 +1,6 @@
 #ifndef SWITCH_H
 #define SWITCH_H
-#include "iot.h"
-#include <QJsonObject>
-#include <QJsonArray>
+#include "../iot.h"
 
 class Switch : public IoT
 {
@@ -16,8 +14,8 @@ private:
 public:
     Switch(const std::string& fSerial, const std::string& fRoom, const std::string& fName="");
     Switch(const QJsonDocument& initializer);
-    static const QJsonDocument& getDeviceInstruction();
-    void setDevice(const QJsonDocument& instruction);
+    const QJsonDocument& getDeviceInstruction() const;
+    void setDevice(const QJsonDocument& instruction) noexcept(false);
 };
 
 #endif // SWITCH_H
