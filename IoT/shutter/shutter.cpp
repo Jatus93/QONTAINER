@@ -3,7 +3,7 @@
 #include <QDir>
 
 std::string Shutter::lClass = "shutter";
-QJsonDocument Shutter::states = QJsonDocument::fromBinaryData(QFile("config.json").readAll());
+QJsonDocument Shutter::states = QJsonDocument::fromJson("{\"height\":{\"min\":"+QString::number(min).toUtf8()+",\"max\":"+QString::number(max).toUtf8()+"}}");
 Shutter::Shutter(const std::string& fSerial, const std::string& fRoom, const std::string& fName):IoT(fSerial,lClass,fRoom,fName)
 {
     status.insert("height",min);
@@ -18,15 +18,11 @@ Shutter::Shutter(const QJsonDocument& initializer):IoT(initializer,lClass){
 }
 
 const QJsonDocument& Shutter::getDeviceInstruction() const{
-    std::cout<< QDir::currentPath().toStdString()<<'\n';
     return states;
 }
 
 void Shutter::setDevice(const QJsonDocument& instruction) noexcept(false){
-    int value = instruction.object().value("height").toInt(-1);
-
-    if(value == -1)
-        throw std::invalid_argument("field power is missing");
+    int value = instruction.object().value("height").toInt();
 
     if(value<min || value>max)
         throw std::invalid_argument("value is not valid");
@@ -36,4 +32,12 @@ void Shutter::setDevice(const QJsonDocument& instruction) noexcept(false){
     } else {
         *status.find("height")=value;
     }
+}
+
+IoT* Shutter::clone() const{
+    return new Shutter(JsonSerialize());
+}
+
+const std::string Shutter::getClass(){
+    return lClass;
 }

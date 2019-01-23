@@ -9,9 +9,15 @@ IoT::IoT(const QJsonDocument& initializer,const std::string& fClass):
     serial(initializer.object().value("serial").toString().toStdString()),
     dClass(fClass),
     room(initializer.object().value("room").toString().toStdString()),
-    name(initializer.object().value("room").toString().toStdString()){
+    name(initializer.object().value("name").toString().toStdString()){
 }
 
+void IoT::setRoom(const std::string& room){
+    this->room = room;
+}
+void IoT::setName(const std::string& name){
+    this->name = name;
+}
 const std::string& IoT::getSerial() const{
     return serial;
 }
@@ -36,3 +42,12 @@ const QJsonDocument& IoT::getStatus() const{
     return (*new QJsonDocument(this->status));
 }
 
+const QJsonDocument& IoT::JsonSerialize() const{
+    QJsonObject toReturn;
+    toReturn.insert("serial",QString::fromStdString(serial));
+    toReturn.insert("class",QString::fromStdString(dClass));
+    toReturn.insert("room",QString::fromStdString(room));
+    toReturn.insert("name",QString::fromStdString(getName()));
+    toReturn.insert("status",status);
+    return *(new QJsonDocument(toReturn));
+}

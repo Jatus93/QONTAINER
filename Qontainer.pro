@@ -3,7 +3,10 @@ TEMPLATE = subdirs
 SUBDIRS += \
     IoT \
     testSwitch \
-    testShutter
+    testShutter \
+    testLight \
+    IoTBuilder \
+    testIoTBuilder
 
 DISTFILES += \
     .travis.yml

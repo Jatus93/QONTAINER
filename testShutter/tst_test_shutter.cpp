@@ -26,6 +26,7 @@ private slots:
     void test_setDevice();
     void test_JsonConstructor();
     void test_incorrectValueException();
+    void test_serializzation();
 
 };
 
@@ -80,22 +81,28 @@ void test_shutter::test_setDevice(){
 }
 
 void test_shutter::test_JsonConstructor(){
-    QJsonDocument init = QJsonDocument::fromJson("{\"serial\":\"BBBBB\",\"room\":\"room1\",\"status\":{\"height\":1}}");
+    QJsonDocument init = QJsonDocument::fromJson("{\"serial\":\"BBBBB\",\"room\":\"room1\",\"status\":{\"height\":60}}");
     delete button;
     button = new Shutter(init);
     QVERIFY(button->getSerial()=="BBBBB");
     QVERIFY(button->getRoom()=="room1");
     QJsonObject status = button->getStatus().object();
-    QVERIFY(status.value("height").toInt()==1);
+    QVERIFY(status.value("height").toInt()==60);
 
 }
 void test_shutter::test_incorrectValueException(){
     std::string error = "value is not valid";
     try{
-        button->setDevice(QJsonDocument::fromJson("{\"height\":10}"));
+        button->setDevice(QJsonDocument::fromJson("{\"height\":1000}"));
     }catch(const std::invalid_argument& e){
         QCOMPARE(e.what(),error);
     }
+}
+
+void test_shutter::test_serializzation(){
+    QJsonDocument s = button->JsonSerialize();
+    std::cout<<QString(s.toJson()).toStdString()<<'\n';
+    QVERIFY(true);
 }
 
 QTEST_APPLESS_MAIN(test_shutter)

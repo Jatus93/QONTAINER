@@ -1,8 +1,6 @@
 #include "switch.h"
-std::string Switch::lClass = "switch";
-QString Switch::rawStates = "{\"power\": {	\"min\":"+ QString::number(min) +" ,\"max\": "+ QString::number(max) +"}}}";
-
-QJsonDocument Switch::states= QJsonDocument::fromJson(rawStates.toUtf8());
+const std::string Switch::lClass = "switch";
+const QJsonDocument Switch::states= QJsonDocument::fromJson("{\"power\": {	\"min\":"+ QString::number(min).toUtf8() +" ,\"max\": "+ QString::number(max).toUtf8() +"}}}");
 
 Switch::Switch(const std::string& fSerial, const std::string& fRoom, const std::string& fName):IoT(fSerial,lClass,fRoom,fName){
     status.insert("power",min);
@@ -35,4 +33,12 @@ void Switch::setDevice(const QJsonDocument& instruction) noexcept(false){
 
 const QJsonDocument& Switch::getDeviceInstruction() const{
     return states;
+}
+
+IoT* Switch::clone() const{
+    return new Switch(JsonSerialize());
+}
+
+const std::string Switch::getClass(){
+    return lClass;
 }

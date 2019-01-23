@@ -1,11 +1,12 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-01-19T17:53:55
+# Project created by QtCreator 2019-01-22T17:16:04
 #
 #-------------------------------------------------
+QT      += core
 QT       -= gui
 
-TARGET = IoT
+TARGET = IoTBuilder
 TEMPLATE = lib
 CONFIG += staticlib
 
@@ -21,13 +22,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        iot.cpp \
-    switch/switch.cpp \
-    shutter/shutter.cpp \
-    light/dimmerablelight.cpp
+        iotbuilder.cpp
 
 HEADERS += \
-        iot.h \
-    switch/switch.h \
-    shutter/shutter.h \
-    light/dimmerablelight.h
+        iotbuilder.h \
+    iotfactorydevice.h \
+    iotdevices.h
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}
+
+unix:!macx: LIBS += -L$$OUT_PWD/../IoT/ -lIoT
+
+INCLUDEPATH += $$PWD/../IoT
+
+DEPENDPATH += $$PWD/../IoT
+
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoT/libIoT.a
