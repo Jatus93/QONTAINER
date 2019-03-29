@@ -6,7 +6,9 @@ SUBDIRS += \
     testShutter \
     testLight \
     IoTBuilder \
-    testIoTBuilder
+    testIoTBuilder \
+    Container \
+    testContainer
 
 DISTFILES += \
     .travis.yml
