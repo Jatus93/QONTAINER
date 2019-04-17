@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=  tst_test_container.cpp
+SOURCES +=  tst_container.cpp
 
 unix:!macx: LIBS += -L$$OUT_PWD/../Container/ -lContainer
 

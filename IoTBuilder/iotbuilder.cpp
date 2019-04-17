@@ -17,11 +17,9 @@ IoT* IoTBuilder::build(const std::string& fSerial, const std::string& fClass, co
 IoT* IoTBuilder::build(const QJsonDocument& device){
     if(!device.object().value("class").isNull()){
         std::string tClass = device.object().value("class").toString().toStdString();
-        if(IoTmap->contains(tClass)){
+        if(IoTmap->contains(tClass))
             return IoTmap->value(tClass)->fbuild(device);
-        }else{
-            throw std::invalid_argument(tClass + " couldn't be found");
-        }
+        throw std::invalid_argument(tClass + " couldn't be found");
     }
     throw std::invalid_argument("Invalid Json document \"class\" field is missing");
 

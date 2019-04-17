@@ -1,114 +1,153 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 #include <iostream>
-namespace container {
-/**
- *
- */
-template<class T>class Container
-{
+#include <signal.h>
+#include <typeinfo>
+template<class T> class Iterator;
+template<class T> class Node;
+template<class T> class Container{
 private:
+    friend class Iterator<T>;
     /**
-     * @brief The Node class
+     * @brief getElement
+     * @param i
+     * @return
      */
-    class Node{
-    public:
-        const T* data;
-        Node* previous;
-        Node* next;
-        /**
-         * @brief Node
-         * @param fData
-         * @param fPrevious
-         * @param fNext
-         */
-        Node(const T* fData,Node* fPrevious=nullptr,Node* fNext=nullptr){
-            data = *fData;
-            previous = fPrevious;
-            next = fNext;
-        }
-        /**
-         * @brief Node
-         * @param fData
-         * @param fPrevious
-         * @param fNext
-         */
-        Node(const T& fData,Node* fPrevious=nullptr,Node* fNext=nullptr){
-            data = &fData;
-            previous = fPrevious;
-            next = fNext;
-        }
-
-        Node(const Node& c){
-            this->data = c.data;
-            this->previous = c.previous;
-            this->next = c.next;
-        }
-        void setNext(Node* next){
-            this->next = next;
-        }
-
-        void setPrevious(Node* previous){
-            this->previous = previous;
-        }
-
-        void setData(const T* data){
-            this->data = data;
-        }
-
-        Node(){
-            data = nullptr;
-            previous = this;
-            next = this;
-        }
-        ~Node(){
-            if(data)
-                delete data;
-        }
-    };
-
-    Node* handle;
-    int size;
-public:
-    Container(){
-        handle = new Node();
-        size = 0;
+    Node<T>* getElement(const int& i) const{
+        if(i>(cSize/2))
+            return getElementFromEnd(i);
+        return getElementFromStart(i);
     }
+    /**
+     * @brief getElementFromTop
+     * @param i
+     * @return
+     */
+    Node<T>* getElementFromEnd(const int& i) const{
+        int index = cSize;
+        Node<T>* pointer = handle->previous->next;
+        while(index>i){
+            index--;
+            pointer = pointer->previous;
+        }
+        return pointer;
+    }
+    /**
+     * @brief getElementFromBottom
+     * @param i
+     * @return
+     */
+    Node<T>* getElementFromStart(const int& i) const{
+        int index = 0;
+        Node<T>* pointer = handle->next;
+        while (index<i) {
+            index++;
+            pointer = pointer->next;
+        }
+        return pointer;
+    }
+
+    void insert(Node<T>* node, const T& value){
+        Node<T>* newNode = new Node<T>(value,node,node->next);
+        if (newNode == nullptr)
+            throw std::bad_alloc();
+        node->next->previous = newNode;
+        node->next = newNode;
+        cSize++;
+
+    }
+
+    const Node<T>* handle;
+    int cSize;
+public:
+    Container():handle(new Node<T>()){
+        cSize = 0;
+    }
+
     /**
      * @brief push_front
      * @param value
      */
 
-    void push_front(const T* value){
-        Node* next = handle;
-        if(size>0)//check if is the first element to be inserted
-            next = handle->next;
-        Node* l_nodo = new Node(value,handle,next);
-        if(next != handle)
-            next->setPrevious(l_nodo);
-        else
-            handle->setPrevious(l_nodo);
-        handle->next = l_nodo;
-        size++;
+    void pushFront(const T& value){
+        insert(0,value);
     }
 
     /**
      * @brief push_back
      * @param value
      */
-    void push_back(const T* value){
-        Node* previous = handle;
-        if(size>0) //check if is the first element to be inserted
-            previous = handle->previous;
-        Node* l_nodo = new Node(value,previous,handle);
-        if(previous != handle) // mantain the coherence in the data structure
-            previous->setNext(l_nodo);
-        else
-            handle->setNext(l_nodo);
-        handle->previous = l_nodo;
-        size++;
+    void pushBack(const T& value){
+        insert(cSize,value);
+    }
+
+    /**
+     * @brief insert
+     * @param i
+     * @param value
+     */
+    void insert(const int i, const T& value){
+        Node<T>* element = getElement(i)->previous;
+        /**Node<T>* newNode = new Node<T>(value,element,element->next);
+        if (newNode == nullptr)
+            throw std::bad_alloc();
+        element->next->previous = newNode;
+        element->next = newNode;**/
+        insert(element,value);
+    }
+
+
+    /**
+     * @brief operator []
+     * @param index
+     * @return
+     */
+    const T& operator[](int index) const{
+        if(index >= cSize || index <0)
+            throw std::out_of_range("Index is out of range");
+        return getElement(index)->data;
+    }
+    /**
+     * @brief deleteElementAt
+     * @param i
+     */
+    void deleteElementAt(int i){
+        if(i >= cSize || i <0)
+            throw std::out_of_range("Index is out of range");
+        delete getElement(i);
+        cSize--;
+    }
+    /**
+     * @brief getIterator
+     * @return
+     */
+    Iterator<T>& getIterator(){
+        if(cSize == 0)
+            throw std::logic_error("Empty contanier cannot build an iterator");
+        return *(new Iterator<T>(const_cast<Container<T>*>(this)));
+    }
+    /**
+     * @brief getIteratorAt
+     * @param index
+     * @return
+     */
+    Iterator<T>& getIteratorAt(int index){
+        if(cSize == 0)
+            throw std::logic_error("Empty contanier cannot build an iterator");
+        return *(new Iterator<T>(const_cast<Container<T>*>(this),getElement(index)));
+    }
+    /**
+     * @brief size
+     * @return
+     */
+    int size() const noexcept{
+        return cSize;
+    }
+    ~Container(){
+        while(cSize>0){
+            deleteElementAt(cSize-1);
+        }
     }
 };
-
-}
 #endif // CONTAINER_H
+#include "iterator.h"

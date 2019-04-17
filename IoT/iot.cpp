@@ -33,9 +33,7 @@ const std::string& IoT::getRoom() const{
 const std::string& IoT::getName() const{
     if(name.empty())
         return serial;
-    else {
-        return name;
-    }
+    return name;
 }
 
 const QJsonDocument& IoT::getStatus() const{
