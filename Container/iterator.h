@@ -4,14 +4,14 @@
 template<class T> class Iterator{
 private:
     friend class Container<T>;
-    Node<T>* current;
-    Container<T>* container;
+    mutable Node<T>* current;
+    const Container<T>* container;
     /**
      * @brief Iterator
      * @param eContainer
      * @param startNode
      */
-    Iterator(Container<T>* eContainer, Node<T>* startNode = nullptr):container(eContainer){
+    Iterator(const Container<T>* eContainer, Node<T>* startNode = nullptr):container(eContainer){
         if(!startNode)
             current = container->handle->next;
         else
@@ -23,20 +23,27 @@ private:
             throw std::bad_function_call();
     }
 public:
+    /**
+     * @brief Iterator
+     */
+
     Iterator():container(nullptr),current(nullptr){}
+
     /**
      * @brief Iterator
      * @param e
      */
-    Iterator(const Iterator& e):Iterator(e.handle,e.current){}
+    Iterator(const Iterator& e):Iterator(e.container,e.current){}
+    Iterator(const Iterator* e):Iterator(e->container,e->current){}
+
 
     /**
      * @brief operator --
      */
-    void operator--(int){
+    void operator--(int) const{
         invalidIterator();
         if(current){
-            if(current->previous != container->handle)
+            if(!current->previous->first)
                 current = current->previous;
             else
                 current = nullptr;
@@ -47,10 +54,10 @@ public:
     /**
      * @brief operator ++
      */
-    void operator++(int){
+    void operator++(int) const{
         invalidIterator();
         if(current){
-            if(current->next != container->handle)
+            if(!current->next->first)
                 current = current->next;
             else
                 current = nullptr;
@@ -75,22 +82,7 @@ public:
         invalidIterator();
         return (current->data);
     }
-    /**
-     * @brief insertAfter
-     * @param data
-     */
-    void insertAfter(const T& data){
-        invalidIterator();
-        container->insert(current,data);
-    }
-    /**
-     * @brief insertBefore
-     * @param data
-     */
-    void insertBefore(const T& data){
-        invalidIterator();
-        container->insert(current->previous,data);
-    }
+
     /**
      * @brief operator =
      * @param data
@@ -124,6 +116,14 @@ public:
         if((current == nullptr) && (v == nullptr))
             return true;
         return (&current->data == v);
+    }
+    /**
+     * @brief operator !=
+     * @param v
+     * @return
+     */
+    bool operator!=(const T* v) const{
+        return !(*this == v);
     }
 
 };

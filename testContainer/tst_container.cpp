@@ -29,6 +29,8 @@ private slots:
     void test_Chain();
     void test_insert();
     void test_Assignment();
+    void test_contIterator();
+    void test_cloneContainer();
 };
 
 Container<int> test_Container::cTest;
@@ -107,17 +109,27 @@ void test_Container::test_Chain(){
 }
 
 void test_Container::test_insert(){
-    it.insertAfter(test_value);
-    it.insertBefore(test_value);
-    std::cout<<cTest.size()<<'\n';
-    outputTest();
-    QVERIFY(cTest[14]==test_value);
-    QVERIFY(cTest[12]==test_value);
+    cTest.insertAfterIterator(it,test_value);
+    QVERIFY(cTest[13]==test_value);
 }
 
 void test_Container::test_Assignment(){
     it = &test_value;
     QVERIFY(cTest[13] == test_value);
+}
+
+void test_Container::test_contIterator(){
+    const Iterator<int> t = cTest.getConstIterator();
+    t++;
+    QVERIFY(*t==cTest[1]);
+}
+
+void test_Container::test_cloneContainer(){
+    Container<int>* test = cTest.clone();
+    for(int i=0;i<test->size();i++){
+        QVERIFY((*test)[i] == cTest[i]);
+        QVERIFY(&(*test)[i] != &cTest[i]);
+    }
 }
 QTEST_APPLESS_MAIN(test_Container)
 

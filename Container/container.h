@@ -54,14 +54,42 @@ private:
         node->next->previous = newNode;
         node->next = newNode;
         cSize++;
-
     }
 
     const Node<T>* handle;
     int cSize;
 public:
+    /**
+     * @brief Container
+     */
     Container():handle(new Node<T>()){
         cSize = 0;
+    }
+    /**
+     * @brief Container
+     * @param c
+     */
+    Container(const Container<T>& c):handle(c.handle){
+        cSize = c.cSize;
+    }
+    /**
+     * @brief Container
+     * @param c
+     */
+    Container(const Container<T>* c):handle(c->handle){
+        cSize = c->size();
+    }
+
+    /**
+     * @brief clone
+     * @return
+     */
+
+    Container<T>* clone() const{
+        Container<T>* temp = new Container<T>();
+        for(int i=0; i<cSize; i++)
+            temp->pushBack(*(new T((*this)[i])));
+        return temp;
     }
 
     /**
@@ -88,12 +116,15 @@ public:
      */
     void insert(const int i, const T& value){
         Node<T>* element = getElement(i)->previous;
-        /**Node<T>* newNode = new Node<T>(value,element,element->next);
-        if (newNode == nullptr)
-            throw std::bad_alloc();
-        element->next->previous = newNode;
-        element->next = newNode;**/
         insert(element,value);
+    }
+
+    /**
+     * @brief insertAfterIterator
+     * @param it
+     */
+    void insertAfterIterator(const Iterator<T>& it, const T& value){
+        insert(it.current,value);
     }
 
 
@@ -121,20 +152,38 @@ public:
      * @brief getIterator
      * @return
      */
-    Iterator<T>& getIterator(){
+    Iterator<T>* getIterator(){
+        return getIteratorAt(0);
+    }
+
+    /**
+     * @brief getConstInterator
+     * @return const Iterator
+     */
+
+    const Iterator<T>* getConstIterator() const{
+        return getConstIteratorAt(0);
+    }
+
+    /**
+     * @brief getConstInteratorAt
+     * @param index
+     * @return const Iterator
+     */
+    const Iterator<T>* getConstIteratorAt(int index) const{
         if(cSize == 0)
             throw std::logic_error("Empty contanier cannot build an iterator");
-        return *(new Iterator<T>(const_cast<Container<T>*>(this)));
+        return new Iterator<T>(this,getElement(index));
     }
     /**
      * @brief getIteratorAt
      * @param index
      * @return
      */
-    Iterator<T>& getIteratorAt(int index){
+    Iterator<T>* getIteratorAt(int index){
         if(cSize == 0)
             throw std::logic_error("Empty contanier cannot build an iterator");
-        return *(new Iterator<T>(const_cast<Container<T>*>(this),getElement(index)));
+        return new Iterator<T>(this,getElement(index));
     }
     /**
      * @brief size
