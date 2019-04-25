@@ -50,8 +50,17 @@ test_Container::~test_Container()
 }
 
 void test_Container::outputTest(){
-    for(int i=0;i<cTest.size();i++)
-        std::cout<<"Risultati "<<i<<" "<<cTest[i]<<' '<<&cTest[i]<<'\n';
+    const Iterator<int> t = cTest.getConstIterator();
+    std::cout<<"Size cTest "<<cTest.size();
+    std::cout<<" Risultati: "<<'\n';
+    for(int i=0;i<cTest.size();i++){
+        std::cout<<"Indice "<<i<<'\t'<<"cTest[i] "<<cTest[i]<<" &cTest[i] "<<&cTest[i]<<'\n';
+        if(t == nullptr)
+            std::cout<<" ---------- NULL -------- "<<'\n';
+        else
+            std::cout<<'\t'<<'\t'<<"*t "<<'\t'<<*t<<" &(*t) "<<&(*t)<<'\n';
+        t++;
+    }
 }
 void test_Container::test_size(){
     QVERIFY(cTest.size()==0);
@@ -60,11 +69,14 @@ void test_Container::test_pushFront()
 {
     for(int i=0; i<10;i++)
         cTest.pushFront(values[i]);
-    QVERIFY(cTest.size()>0);
+    QVERIFY(cTest.size()==10);
 }
 
 void test_Container::test_subscription(){
-    QVERIFY(cTest[0]==0);
+    for (int i=0;i<10;i++) {
+        //std::cout<<"container "<<cTest[i]<<" value "<<values[9-i]<<" index "<<i<<'\n';
+        QVERIFY(cTest[i] == values[9-i]);
+    }
 }
 
 void test_Container::test_pushBack(){
@@ -76,6 +88,7 @@ void test_Container::test_insertion(){
     cTest.insert(5,mid);
     QVERIFY(cTest[5] == mid);
 }
+
 void test_Container::test_insertionSecond(){
     cTest.insert(8,another);
     QVERIFY(cTest[8] == another);
@@ -116,17 +129,17 @@ void test_Container::test_insert(){
 void test_Container::test_Assignment(){
     it = &test_value;
     QVERIFY(cTest[13] == test_value);
+
 }
 
 void test_Container::test_contIterator(){
-    const Iterator<int> t = cTest.getConstIterator();
-    t++;
-    QVERIFY(*t==cTest[1]);
+    const Iterator<int> ot = cTest.getConstIterator();
+    QVERIFY(*ot == cTest[0]);
 }
 
 void test_Container::test_cloneContainer(){
     Container<int>* test = cTest.clone();
-    for(int i=0;i<test->size();i++){
+    for(int i=0;i<cTest.size();i++){
         QVERIFY((*test)[i] == cTest[i]);
         QVERIFY(&(*test)[i] != &cTest[i]);
     }

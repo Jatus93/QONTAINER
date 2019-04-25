@@ -14,6 +14,7 @@ public:
 private slots:
     void test_case1();
     void test_jsonBuilder();
+    void test_Cleaner();
 
 };
 
@@ -32,7 +33,7 @@ test_IoT_builder::~test_IoT_builder()
 
 void test_IoT_builder::test_case1()
 {
-    QList<std::string> keys = IoTBuilder::getKeys();
+    std::list<std::string> keys = IoTBuilder::getKeys();
     std::string key;
     QList<IoT*> dev;
     foreach (key, keys) {
@@ -50,6 +51,11 @@ void test_IoT_builder::test_jsonBuilder(){
     IoT* dev = IoTBuilder::build(conf);
     QJsonDocument s = dev->JsonSerialize();
     std::cout<<QString(s.toJson()).toStdString()<<'\n';
+    QVERIFY(QString::fromLocal8Bit(conf.toJson()) == QString::fromLocal8Bit(s.toJson()));
+}
+
+void test_IoT_builder::test_Cleaner(){
+    IoTBuilder::builderCleaner();
 }
 
 QTEST_APPLESS_MAIN(test_IoT_builder)

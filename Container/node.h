@@ -34,12 +34,10 @@ private:
         next = this;
     }
     ~Node(){
-        if(next != this && previous!=this){
-            previous->next = next;
-            next->previous = previous;
+        if(!this->first){
+            previous=this;
+            next = this;
         }
-        previous=nullptr;
-        next = nullptr;
     }
 };
 

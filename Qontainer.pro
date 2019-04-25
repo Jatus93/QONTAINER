@@ -8,7 +8,9 @@ SUBDIRS += \
     IoTBuilder \
     testIoTBuilder \
     Container \
-    testContainer
+    testContainer \
+    ContainerFiller \
+    Model
 
 DISTFILES += \
     .travis.yml

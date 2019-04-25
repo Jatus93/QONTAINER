@@ -42,10 +42,11 @@ const QJsonDocument& IoT::getStatus() const{
 
 const QJsonDocument& IoT::JsonSerialize() const{
     QJsonObject toReturn;
-    toReturn.insert("serial",QString::fromStdString(serial));
-    toReturn.insert("class",QString::fromStdString(dClass));
-    toReturn.insert("room",QString::fromStdString(room));
-    toReturn.insert("name",QString::fromStdString(getName()));
-    toReturn.insert("status",status);
+    toReturn["serial"] = QString::fromStdString(serial);
+    toReturn["serial"] = QString::fromStdString(serial);
+    toReturn["class"] = QString::fromStdString(dClass);
+    toReturn["room"] = QString::fromStdString(room);
+    toReturn["name"] = QString::fromStdString(getName());
+    toReturn["status"] = status;
     return *(new QJsonDocument(toReturn));
 }

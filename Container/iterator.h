@@ -19,8 +19,8 @@ private:
     }
 
     void invalidIterator() const{
-        if(!container && !current)
-            throw std::bad_function_call();
+        if(!container)
+            throw std::domain_error("Iterator not valid");
     }
 public:
     /**
@@ -90,7 +90,7 @@ public:
     void operator=(const T* data){
         invalidIterator();
         if(current){
-            Node<T>* temp = new Node<T>(*data,current->next,current->previous);
+            Node<T>* temp = new Node<T>(*data,current->previous,current->next);
             current->previous->next = temp;
             current->next->previous = temp;
             delete current;

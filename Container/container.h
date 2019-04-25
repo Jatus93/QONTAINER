@@ -14,7 +14,7 @@ private:
      * @return
      */
     Node<T>* getElement(const int& i) const{
-        if(i>(cSize/2))
+        if(i>((cSize/2)))
             return getElementFromEnd(i);
         return getElementFromStart(i);
     }
@@ -24,9 +24,9 @@ private:
      * @return
      */
     Node<T>* getElementFromEnd(const int& i) const{
-        int index = cSize;
+        int index = cSize-1;
         Node<T>* pointer = handle->previous->next;
-        while(index>i){
+        while(index>=i){
             index--;
             pointer = pointer->previous;
         }
@@ -46,7 +46,11 @@ private:
         }
         return pointer;
     }
-
+    /**
+     * @brief insert
+     * @param node
+     * @param value
+     */
     void insert(Node<T>* node, const T& value){
         Node<T>* newNode = new Node<T>(value,node,node->next);
         if (newNode == nullptr)
@@ -87,8 +91,11 @@ public:
 
     Container<T>* clone() const{
         Container<T>* temp = new Container<T>();
-        for(int i=0; i<cSize; i++)
-            temp->pushBack(*(new T((*this)[i])));
+        Iterator<T> it = getConstIterator();
+        while(it!=nullptr){
+            temp->pushBack(*(new T(*it)));
+            it++;
+        }
         return temp;
     }
 
@@ -145,7 +152,10 @@ public:
     void deleteElementAt(int i){
         if(i >= cSize || i <0)
             throw std::out_of_range("Index is out of range");
-        delete getElement(i);
+        Node<T>* toDelete =  getElement(i);
+        toDelete->previous->next = toDelete->next;
+        toDelete->next->previous = toDelete->previous;
+        delete toDelete;
         cSize--;
     }
     /**
