@@ -55,7 +55,7 @@ void test_IoT_builder::test_jsonBuilder(){
 }
 
 void test_IoT_builder::test_Cleaner(){
-    IoTBuilder::builderCleaner();
+    //IoTBuilder::builderCleaner();
 }
 
 QTEST_APPLESS_MAIN(test_IoT_builder)

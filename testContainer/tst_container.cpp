@@ -31,6 +31,7 @@ private slots:
     void test_Assignment();
     void test_contIterator();
     void test_cloneContainer();
+    void test_search();
 };
 
 Container<int> test_Container::cTest;
@@ -136,6 +137,13 @@ void test_Container::test_contIterator(){
     const Iterator<int> ot = cTest.getConstIterator();
     QVERIFY(*ot == cTest[0]);
 }
+
+void test_Container::test_search(){
+    const Iterator<int> it = cTest.search(test_value);
+    QVERIFY(*it == test_value);
+    QVERIFY(&(*it) == &test_value);
+}
+
 
 void test_Container::test_cloneContainer(){
     Container<int>* test = cTest.clone();

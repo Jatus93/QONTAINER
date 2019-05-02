@@ -60,6 +60,13 @@ private:
         cSize++;
     }
 
+    void deleteNode(Node<T>* toDelete){
+        toDelete->previous->next = toDelete->next;
+        toDelete->next->previous = toDelete->previous;
+        delete toDelete;
+        cSize--;
+    }
+
     const Node<T>* handle;
     int cSize;
 public:
@@ -115,6 +122,17 @@ public:
     void pushBack(const T& value){
         insert(cSize,value);
     }
+    /**
+     * @brief search
+     * @param value
+     * @return
+     */
+    const Iterator<T>& search(const T& value) const{
+        const Iterator<T> it = getConstIterator();
+        while((&(*it) != &value) && (it!=nullptr))
+            it++;
+        return *(new Iterator<T>(it));
+    }
 
     /**
      * @brief insert
@@ -152,11 +170,19 @@ public:
     void deleteElementAt(int i){
         if(i >= cSize || i <0)
             throw std::out_of_range("Index is out of range");
-        Node<T>* toDelete =  getElement(i);
-        toDelete->previous->next = toDelete->next;
-        toDelete->next->previous = toDelete->previous;
-        delete toDelete;
-        cSize--;
+        deleteNode(getElement(i));
+    }
+
+    /**
+     * @brief deleteElementAt
+     * @param it
+     */
+    void deleteElementAt(const Iterator<T>& it){
+        if(it==nullptr)
+            throw std::logic_error("Iterator past end");
+        Node<T>* n = it.current;
+        it++;
+        deleteNode(n);
     }
     /**
      * @brief getIterator

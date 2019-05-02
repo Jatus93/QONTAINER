@@ -16,7 +16,8 @@ QJsonDocument& ContainerFiller::serialize(const Container<IoT>& container){
     const Iterator<IoT> it = container.getConstIterator();
     int i = 0;
     while(it!=nullptr){
-        devices.insert(QString::number(i++),(*it).JsonSerialize().object());
+
+        devices.insert(QString::number(i++),(*it).JsonSerialize());
         it++;
     }
     return *(new QJsonDocument(devices));
