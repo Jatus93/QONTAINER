@@ -1,5 +1,6 @@
 #include "model.h"
 std::string Model::default_path = "IoTManager.json";
+
 /**
  * @brief Model::IoTContainer::IoTContainer
  * @param dev
@@ -46,10 +47,10 @@ std::string Model::IoTContainer::serialize() const{
 Iterator<IoT> Model::IoTContainer::searchName(std::string name) const{
     Iterator<IoT> it = this->getConstIterator();
     bool exit = false;
-    while(it!=nullptr && !exit){
-        if((*it).getName() == name)
-            exit = true;
-        it++;
+    while(!(it==nullptr || exit)){
+        exit = ((*it).getName() == name);
+        if(!exit)
+            it++;
     }
     return it;
 }
@@ -61,13 +62,46 @@ Iterator<IoT> Model::IoTContainer::searchName(std::string name) const{
 Iterator<IoT> Model::IoTContainer::searchSerial(std::string serial) const{
     Iterator<IoT> it = this->getConstIterator();
     bool exit = false;
-    while(it!=nullptr && !exit){
-        if((*it).getSerial() == serial)
-            exit = true;
-        it++;
+    while(!(it==nullptr || exit)){
+        exit = (*it).getSerial() == serial;
+        if(!exit)
+            it++;
     }
     return it;
 }
+
+/**
+ * @brief Model::IoTContainer::getDevicesForAttribute
+ * @param attribute
+ * @return
+ */
+std::string Model::IoTContainer::getDevicesForAttribute(std::string attribute) const{
+    QJsonDocument json = QJsonDocument::fromJson(attribute.c_str());
+    QStringList keys = json.object().keys();
+    std::string toReturn = "{    ";
+    int i=0;
+    const Iterator<IoT> it(this->getConstIterator());
+    while(it!=nullptr){
+        const IoT& dev = it.getData();
+        it++;
+        QJsonObject IoTStatus = dev.JsonSerialize().object();
+        foreach(const QString& key, IoTStatus.keys()){
+            if(!keys.contains(key)){
+                IoTStatus.remove(key);
+            }
+        }
+        if(json == QJsonDocument(IoTStatus)){
+            toReturn += std::to_string(i++) +":";
+            toReturn= toReturn+ dev.JsonSerialize().toJson().toStdString();
+            if(it != nullptr)
+                toReturn = toReturn + ',';
+        }
+    }
+    toReturn = toReturn + '}';
+
+    return toReturn;
+}
+
 /**
  * @brief Model::Model
  * @param file_path
@@ -125,6 +159,9 @@ bool Model::save(const std::string &file_path) const{
 
 bool Model::addDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
+    Iterator<IoT> dev = iotdev.searchSerial(device["serial"].toString().toStdString());
+    if(dev != nullptr)
+        iotdev.deleteElementAt(dev);
     try {
         iotdev.pushBack(*IoTBuilder::getDevice(device));
     } catch (std::runtime_error* e) {
@@ -140,19 +177,22 @@ bool Model::addDevice(const std::string &json_device){
  */
 
 bool Model::setDeviceStatus(const std::string &status){
-    QJsonDocument device = QJsonDocument::fromJson(status.c_str());
-    std::string serial = device.object().value("status").toString().toStdString();
-    std::cout <<serial;
+    bool ok = false;
+    QJsonDocument j_status = QJsonDocument::fromJson(status.c_str());
+    std::string serial = j_status["serial"].toString().toStdString();
+    QJsonDocument command(j_status["status"].toObject());
     const Iterator<IoT> it = iotdev.searchSerial(serial);
     const IoT* const_ptr = &(*it);
     IoT* ptr = const_cast<IoT*>(const_ptr);
     try {
-        ptr->setDevice(QJsonDocument::fromJson(device["status"].toString().toUtf8()));
+        ptr->setDevice(command);
+        std::string after = ptr->getStatus().toJson().toStdString();
+        ok = command.toJson().toStdString() == after;
     } catch (std::runtime_error* e) {
         std::cout<<e->what()<<'\n';
-        return false;
+        ok = false;
     }
-    return true;
+    return ok;
 }
 /**
  * @brief Model::removeDevice
@@ -160,7 +200,7 @@ bool Model::setDeviceStatus(const std::string &status){
  * @return
  */
 bool Model::removeDevice(const std::string &json_device){
-    QJsonDocument device = QJsonDocument::fromRawData(json_device.c_str(),static_cast<int>(json_device.size()));
+    QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
     const Iterator<IoT> it = iotdev.searchSerial(device["serial"].toString().toStdString());
     try{
         iotdev.deleteElementAt(it);
@@ -179,4 +219,12 @@ bool Model::removeDevice(const std::string &json_device){
 const std::string Model::getDeviceStatus(const int index) const{
     const IoT& device = (iotdev[index]);
     return device.getStatus().toJson().toStdString();
+}
+
+const std::string Model::getDeviceFiltered(const std::string values) const{
+    return (iotdev.getDevicesForAttribute(values));
+}
+
+Model::~Model(){
+    IoTBuilder::builderCleaner();
 }

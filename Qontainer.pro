@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    Adapter \
     IoT \
+    UI \
     testSwitch \
     testShutter \
     testLight \

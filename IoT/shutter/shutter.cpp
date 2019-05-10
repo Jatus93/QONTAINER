@@ -22,7 +22,7 @@ const QJsonDocument& Shutter::getDeviceInstruction() const{
 }
 
 void Shutter::setDevice(const QJsonDocument& instruction) noexcept(false){
-    int value = instruction.object().value("height").toInt();
+    int value = instruction["height"].toInt(0);
 
     if(value<min || value>max)
         throw std::invalid_argument("value is not valid");

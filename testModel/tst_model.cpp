@@ -16,10 +16,13 @@ public:
 private:
     std::string loadFile();
 private slots:
-    void test_case1();
+    void test_Construct_Load();
     void test_save();
     void test_deviceStatus();
     void test_setDeviceStatus();
+    void test_delete();
+    void test_addDevice();
+    void test_searchSubset();
 
 };
 Model* test_model::test = nullptr;
@@ -30,7 +33,7 @@ test_model::test_model()
 
 test_model::~test_model()
 {
-
+    delete test;
 }
 std::string test_model::loadFile(){
     std::ifstream IoTfile("IoTManager.json");
@@ -43,7 +46,7 @@ std::string test_model::loadFile(){
     }
     return devices;
 }
-void test_model::test_case1()
+void test_model::test_Construct_Load()
 {
     test = new Model();
 }
@@ -63,11 +66,26 @@ void test_model::test_deviceStatus(){
 }
 
 void test_model::test_setDeviceStatus(){
-    std::string n_status = "{ \"class\": \"shutter\",\"name\": \"CCCCCC10\",\"room\": \"room25\",\"serial\": \"CCCCCC10\",\"status\": {\"height\": 100}";
+    std::string n_status = "{ \"class\": \"shutter\",\"name\": \"CCCCCC10\",\"room\": \"room25\",\"serial\": \"CCCCCC10\",\"status\": {\"height\": 100}}";
     QVERIFY(test->setDeviceStatus(n_status));
 
 }
 
+void test_model::test_delete(){
+    std::string n_status = "{\"serial\": \"CCCCCC10\"}";
+    QVERIFY(test->removeDevice(n_status));
+}
+
+void test_model::test_addDevice(){
+    std::string n_status = "{ \"class\": \"shutter\",\"name\": \"CCCCCC10\",\"room\": \"room25\",\"serial\": \"CCCCCC10\",\"status\": {\"height\": 100}}";
+    QVERIFY(test->addDevice(n_status));
+}
+
+void test_model::test_searchSubset(){
+    std::string n_status = "{\"serial\": \"CCCCCC10\",\"room\": \"room25\"}";
+    std::string r = test->getDeviceFiltered(n_status);
+    std::cout<< r <<'\n';
+}
 QTEST_APPLESS_MAIN(test_model)
 
 #include "tst_model.moc"

@@ -11,12 +11,12 @@ class Model
 private:
     class IoTContainer : public Container<IoT>{
     public:
-        //IoTContainer(const std::string& dev);
-        void loadFromJson(const std::string& dev);
         IoTContainer();
+        void loadFromJson(const std::string& dev);
         std::string serialize() const;
         Iterator<IoT> searchName(std::string name) const;
         Iterator<IoT> searchSerial(std::string serial) const;
+        std::string getDevicesForAttribute(std::string attribute) const;
     };
     IoTContainer iotdev;
     static std::string default_path;
@@ -28,6 +28,8 @@ public:
     bool removeDevice(const std::string& json_device);
     bool setDeviceStatus(const std::string& status);
     const std::string getDeviceStatus(const int index) const;
+    const std::string getDeviceFiltered(const std::string room) const;
+    ~Model();
 };
 
 #endif // MODEL_H
