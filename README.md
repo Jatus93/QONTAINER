@@ -1,2 +1,0 @@
-# QONTAINER
-Progetto Pao

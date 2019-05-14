@@ -1,22 +1,38 @@
 #ifndef IOT_H
 #define IOT_H
+
 #include <iostream>
+#include <fstream>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
+
 class IoT{
-protected:
-    std::string serial;
-    std::string dClass;
+
+private:
+    const std::string serial;
+    const std::string dClass;
     std::string room;
+    std::string name;
+
+protected:
+    QJsonObject status;
 
 public:
-    IoT(std::string& fSerial,std::string& fClass,std::string& fRoom);
+    IoT(const std::string& fSerial, const std::string& fClass, const std::string& fRoom="",const std::string& fName="");
+    IoT(const QJsonDocument& initializer, const std::string& fClass);
+    void setRoom(const std::string& room);
+    void setName(const std::string& name);
     const std::string& getSerial() const;
     const std::string& getClass() const;
     const std::string& getRoom() const;
-    virtual const void* getDeviceInstruction() const = 0;
-    virtual const void* getStatus() const = 0;
-    virtual void setDevice(void* instruction) = 0;
+    const std::string& getName() const;
+    const QJsonDocument& getStatus() const;
+    virtual void setDevice(const QJsonDocument& instruction) noexcept(false) = 0;
+    virtual const QJsonDocument& getDeviceInstruction() const = 0;
+    virtual IoT* clone() const = 0;
+    const QJsonDocument& JsonSerialize() const;
     virtual ~IoT() = default;
 
 };
-
 #endif // IOT_H
