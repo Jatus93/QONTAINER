@@ -23,6 +23,7 @@ private slots:
     void test_delete();
     void test_addDevice();
     void test_searchSubset();
+    void test_roomAndevices();
 
 };
 Model* test_model::test = nullptr;
@@ -82,9 +83,14 @@ void test_model::test_addDevice(){
 }
 
 void test_model::test_searchSubset(){
-    std::string n_status = "{\"serial\": \"CCCCCC10\",\"room\": \"room25\"}";
+    std::string n_status = "{\"serial\":\"CCCCCC10\",\"room\": \"room25\"}";
     std::string r = test->getDeviceFiltered(n_status);
-    std::cout<< r <<'\n';
+    std::string expeted = "{0:{\"class\": \"shutter\",\"name\": \"CCCCCC10\", \"room\": \"room25\", \"serial\": \"CCCCCC10\",\"status\": {\"height\": 100}}}";
+    QVERIFY(QJsonDocument::fromJson(expeted.c_str()) == QJsonDocument::fromJson(r.c_str()));
+}
+void test_model::test_roomAndevices(){
+    std::cout << test->getAllRooms() << '\n';
+    std::cout << test->getAllDevicesClass() << '\n';
 }
 QTEST_APPLESS_MAIN(test_model)
 

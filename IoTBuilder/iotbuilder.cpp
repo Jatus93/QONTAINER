@@ -30,7 +30,7 @@ IoT* IoTBuilder::build(const std::string& fSerial, const std::string& fClass, co
  */
 IoT* IoTBuilder::build(const QJsonDocument& device){
     std::string check = device.toJson().toStdString();
-    std::string tClass = device["class"].toString("empty").toStdString();
+    std::string tClass = device.object()["class"].toString("empty").toStdString();
     if( tClass != "empty"){//!device.object().value("class").isNull()){
         std::map<std::string,IoTBuilder*>::iterator it= IoTmap->find(tClass);
         if(it != (*IoTmap).end())
@@ -46,7 +46,7 @@ IoT* IoTBuilder::build(const QJsonDocument& device){
  * @return
  */
 IoT* IoTBuilder::getDevice(const QJsonDocument& device){
-    std::string deviceClass = device["class"].toString().toStdString();
+    std::string deviceClass = device.object()["class"].toString().toStdString();
     std::map<std::string,IoTBuilder*>::iterator it= IoTmap->find(deviceClass);
     if(it != (*IoTmap).end())
         return it->second->build(device);

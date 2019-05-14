@@ -100,7 +100,7 @@ void test_Switch::test_incorrectValueException(){
     try{
         button->setDevice(QJsonDocument::fromJson("{\"power\":10}"));
     }catch(const std::invalid_argument& e){
-        QCOMPARE(e.what(),error);
+        QCOMPARE(e.what(),error.c_str());
     }
 }
 QTEST_APPLESS_MAIN(test_Switch)

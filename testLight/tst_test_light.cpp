@@ -62,7 +62,7 @@ void test_light::test_room(){
     QCOMPARE(button->getRoom(),room);
 }
 void test_light::test_class(){
-    QCOMPARE(button->getClass(),"dimmerableLight");
+    QCOMPARE(button->getClass().c_str(),"dimmerableLight");
 }
 void test_light::test_Instruction(){
     QJsonDocument instructions = button->getDeviceInstruction();
@@ -96,7 +96,7 @@ void test_light::test_incorrectValueException(){
     try{
         button->setDevice(QJsonDocument::fromJson("{\"brightness\":1000}"));
     }catch(const std::invalid_argument& e){
-        QCOMPARE(e.what(),error);
+        QCOMPARE(e.what(),error.c_str());
     }
 }
 

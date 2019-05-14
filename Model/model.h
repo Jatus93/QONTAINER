@@ -20,6 +20,8 @@ private:
     };
     IoTContainer iotdev;
     static std::string default_path;
+    static QJsonObject room;
+    static QJsonObject devices;
 public:
     Model(const std::string& file_path=default_path);
     bool load(const std::string& file_path=default_path) ;
@@ -29,6 +31,9 @@ public:
     bool setDeviceStatus(const std::string& status);
     const std::string getDeviceStatus(const int index) const;
     const std::string getDeviceFiltered(const std::string room) const;
+    const std::string getAllDevicesClass() const;
+    const std::string getAllRooms() const;
+    bool addRoom(std::string & room);
     ~Model();
 };
 
