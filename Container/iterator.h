@@ -12,7 +12,7 @@ private:
      * @param startNode
      */
     Iterator(const Container<T>* eContainer, Node<T>* startNode = nullptr):container(eContainer){
-        if(!startNode)
+        if(!startNode && container->size()!=0)
             current = container->handle->next;
         else
             current = startNode;
@@ -33,8 +33,8 @@ public:
      * @brief Iterator
      * @param e
      */
-    Iterator(const Iterator& e):Iterator(e.container,e.current){}
-    Iterator(const Iterator* e):Iterator(e->container,e->current){}
+    Iterator(const Iterator& e):container(e.container){ current = e.current;}
+    Iterator(const Iterator* e):container(e->container){ current = e->current;}
 
 
     /**

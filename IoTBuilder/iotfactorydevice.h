@@ -1,6 +1,6 @@
 #ifndef IOTFACTORYDEVICE_H
 #define IOTFACTORYDEVICE_H
-#include <iotbuilder.h>
+#include "iotbuilder.h"
 #include <typeinfo>
 
 template<class T> class IoTFactoryDevice : public IoTBuilder{

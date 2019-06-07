@@ -26,14 +26,48 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
+        maincontent.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        maincontent.h \
         mainwindow.h
-
-FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+unix:!macx: LIBS += -L$$OUT_PWD/../Container/ -lContainer
+
+INCLUDEPATH += $$PWD/../Container
+DEPENDPATH += $$PWD/../Container
+
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../Container/libContainer.a
+
+unix:!macx: LIBS += -L$$OUT_PWD/../IoT/ -lIoT
+
+INCLUDEPATH += $$PWD/../IoT
+DEPENDPATH += $$PWD/../IoT
+
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoT/libIoT.a
+
+unix:!macx: LIBS += -L$$OUT_PWD/../IoTBuilder/ -lIoTBuilder
+
+INCLUDEPATH += $$PWD/../IoTBuilder
+DEPENDPATH += $$PWD/../IoTBuilder
+
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoTBuilder/libIoTBuilder.a
+
+unix:!macx: LIBS += -L$$OUT_PWD/../Model/ -lModel
+
+INCLUDEPATH += $$PWD/../Model
+DEPENDPATH += $$PWD/../Model
+
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../Model/libModel.a
+
+unix:!macx: LIBS += -L$$OUT_PWD/../QModel/ -lQModel
+
+INCLUDEPATH += $$PWD/../QModel
+DEPENDPATH += $$PWD/../QModel

@@ -37,7 +37,7 @@ test_model::~test_model()
     delete test;
 }
 std::string test_model::loadFile(){
-    std::ifstream IoTfile("IoTManager.json");
+    std::ifstream IoTfile("IoT.json");
     std::string devices;
     if(IoTfile.is_open()){
         std::string line;
@@ -89,8 +89,8 @@ void test_model::test_searchSubset(){
     QVERIFY(QJsonDocument::fromJson(expeted.c_str()) == QJsonDocument::fromJson(r.c_str()));
 }
 void test_model::test_roomAndevices(){
-    std::cout << test->getAllRooms() << '\n';
-    std::cout << test->getAllDevicesClass() << '\n';
+    QVERIFY(test->getAllRooms() == "{\"rooms\":[\"room25\",\"room10\"]}");
+    QVERIFY(test->getAllDevicesClass() == "{\"devices\":[\"dimmerableLight\",\"shutter\",\"switch\"]}");
 }
 QTEST_APPLESS_MAIN(test_model)
 

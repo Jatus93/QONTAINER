@@ -141,7 +141,6 @@ void test_Container::test_contIterator(){
 void test_Container::test_search(){
     const Iterator<int> it = cTest.search(test_value);
     QVERIFY(*it == test_value);
-    QVERIFY(&(*it) == &test_value);
 }
 
 

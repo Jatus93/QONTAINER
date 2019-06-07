@@ -1,3 +1,4 @@
+
 #include <QtTest>
 #include <dimmerablelight.h>
 // add necessary includes here

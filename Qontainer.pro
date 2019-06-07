@@ -1,18 +1,12 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    Adapter \
     IoT \
+    QModel \
     UI \
-    testSwitch \
-    testShutter \
-    testLight \
     IoTBuilder \
-    testIoTBuilder \
     Container \
-    testContainer \
-    Model \
-    testModel
+    Model
 
 DISTFILES += \
     .travis.yml

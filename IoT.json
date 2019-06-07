@@ -1,0 +1,19 @@
+{"0":{
+    "class": "shutter",
+    "name": "Tapparella Gian",
+    "room": "room25",
+    "serial": "CCCCCC10",
+    "status": {
+        "height": 0
+    }
+}
+,"1":{
+    "class": "shutter",
+    "name": "Tapparella Cucina",
+    "room": "room25",
+    "serial": "CCCCCC11",
+    "status": {
+        "height": 0
+    }
+}
+}
