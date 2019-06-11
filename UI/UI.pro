@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        interactiveiot.cpp \
         main.cpp \
         maincontent.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        interactiveiot.h \
         maincontent.h \
         mainwindow.h
 

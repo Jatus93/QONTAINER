@@ -1,7 +1,10 @@
 #include "maincontent.h"
-MainContent::MainContent(QWidget *parent) : QTabWidget(parent)
+MainContent::MainContent(QModel* eData,QWidget *parent) : QTabWidget(parent)
 {
-    data = new QModel(this);
+    if(eData == nullptr)
+        data = new QModel(this);
+    else
+        data = eData;
     fillTabs();
 }
 
@@ -24,4 +27,16 @@ void MainContent::load(QString filepath){
     }
     tabIndex.clear();
     fillTabs();
+}
+
+void MainContent::showAddEntryDialog(){
+}
+void MainContent::addEntry(QString device){
+
+}
+void MainContent::editEntry(){
+
+}
+void MainContent::removeEntry(){
+
 }

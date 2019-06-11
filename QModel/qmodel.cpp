@@ -31,7 +31,7 @@ QVariant QModel::data(const QModelIndex &index, int role) const{
 
 QVariant QModel::headerData(int section, Qt::Orientation orientation, int role) const{
     if (role != Qt::DisplayRole)
-            return QVariant();
+        return QVariant();
     if(orientation == Qt::Horizontal){
         if(section == 0)
             return tr("Nome dispositivo");
@@ -42,4 +42,32 @@ QVariant QModel::headerData(int section, Qt::Orientation orientation, int role) 
         return QString::number(section);
     }
     return QVariant();
+}
+
+bool QModel::insertRows(int position, int rows, const QModelIndex &index){
+    Q_UNUSED(index);
+    beginInsertRows(QModelIndex(), position, position + rows - 1);
+    endInsertRows();
+    return true;
+}
+
+bool QModel::setData(const QModelIndex &index, const QVariant &value, int role){
+    if(index.isValid() && role == Qt::EditRole){
+        int row = index.row();
+        IoT* device = nullptr;
+        try {
+            device = iotdev[row];
+        } catch (std::out_of_range& e) {
+            if(strcmp(e.what(), "Index is out of range")){
+                addDevice(value.toString().toStdString());
+                emit dataChanged(index,index,{role});
+                return true;
+            }
+        }
+        QJsonDocument instructions = QJsonDocument::fromVariant(value);
+        device->setDevice(instructions);
+        emit dataChanged(index,index,{role});
+        return true;
+    }
+    return false;
 }

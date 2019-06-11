@@ -6,10 +6,12 @@ MainWindow::MainWindow()
 {
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
-
-    mainContent = new MainContent();
+    QModel* data= new QModel(this);
+    mainContent = new MainContent(data,this);
     QVBoxLayout *layout = new QVBoxLayout;
-
+    QLabel* info = new QLabel(this);
+    info->setText(tr("Ci sono ")+QString::number(data->size())+tr(" IoT device online"));
+    layout->addWidget(info);
     layout->addWidget(mainContent);
     widget->setLayout(layout);
 

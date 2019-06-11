@@ -33,6 +33,7 @@ private slots:
     void about();
     void aboutQt();
 private:
+    QModel* data;
     void createActions();
     void createMenus();
     MainContent * mainContent;
