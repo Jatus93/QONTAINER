@@ -11,17 +11,20 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSlider>
+#include <QJsonArray>
 class InteractiveIot : public QWidget
 {
     Q_OBJECT
 public:
-    InteractiveIot(IoT * eDevice=nullptr, QWidget *parent =nullptr);
-
+    InteractiveIot(QString JsonRooms ,IoT * eDevice=nullptr, QWidget *parent =nullptr);
+    ~InteractiveIot();
+signals:
+    void newDevice(const QString device);
 private:
     QBoxLayout* createGroup(QWidget* first, QWidget* second);
     QLabel* setQLabel(QString text);
     void setUpDefault();
-    //void localSetLayout();
+    void clearLayout(QLayout* to_clean);
     void lupdate();
 
 private slots:
@@ -31,21 +34,27 @@ private slots:
     void setStatus(const QJsonDocument& s_status);
     void setSerial(const QString& s_serial);
     void setClass(const QString& dClass);
+    void statusProxyButton(const bool status);
+    void statusProxySlider(const int status);
+    void setDone();
 private:
     QString dClass;
     QString dserial;
     IoT* device;
     QLabel *name;
     QLabel *room;
-    QLabel *status;
     QLabel *serial;
+    QMap<QString,QPushButton*>* statusButtons;
+    QMap<QString,QSlider*>* statusSliders;
+    QPushButton* done;
     QLineEdit* e_name;
-    QLineEdit *e_room;
-    QLayout *e_status;
+    QComboBox *e_room;
+    QGroupBox *e_status;
     QLineEdit *e_serial;
     QComboBox * classChoose;
-    QFormLayout *layout;
+    QFormLayout *wlayout;
     QLabel * lClass;
+    QJsonObject devcurrent;
 };
 
 #endif // INTERACTIVEIOT_H

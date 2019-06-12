@@ -20,6 +20,7 @@ private:
 public:
     explicit MainContent(QModel* eData=nullptr, QWidget *parent = nullptr);
     void load(QString filepath);
+    void save(QString filepath);
 public slots:
     void showAddEntryDialog();
     void addEntry(QString device);

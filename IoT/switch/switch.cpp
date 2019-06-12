@@ -1,6 +1,6 @@
 #include "switch.h"
 const std::string Switch::lClass = "switch";
-const QJsonDocument Switch::states= QJsonDocument::fromJson("{\"power\": {	\"min\":"+ QString::number(min).toUtf8() +" ,\"max\": "+ QString::number(max).toUtf8() +"}}}");
+const QJsonDocument Switch::states= QJsonDocument::fromJson("{\"power\": {	\"min\":"+ QString::number(min).toUtf8() +" ,\"max\": "+ QString::number(max).toUtf8() +"}}");
 
 Switch::Switch(const std::string& fSerial, const std::string& fRoom, const std::string& fName):IoT(fSerial,lClass,fRoom,fName){
     status.insert("power",min);

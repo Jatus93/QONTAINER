@@ -29,6 +29,9 @@ void MainContent::load(QString filepath){
     fillTabs();
 }
 
+void MainContent::save(QString filepath){
+    data->save(filepath.toStdString());
+}
 void MainContent::showAddEntryDialog(){
 }
 void MainContent::addEntry(QString device){
