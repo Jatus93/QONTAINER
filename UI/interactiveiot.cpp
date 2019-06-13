@@ -85,11 +85,16 @@ void InteractiveIot::setStatusEditor(){
     foreach(const auto key,instruction.keys()){
         QLabel * field = new QLabel(key,e_status);
         s_layout->addWidget(field);
-        if((instruction.value(key).toObject().value(tr("max")).toInt()-instruction.value(key).toObject().value(tr("min")).toInt())==1){
+        if((instruction.value(key).toObject().value(tr("max")).toInt(0)-instruction.value(key).toObject().value(tr("min")).toInt(0))==0){
+            QLCDNumber * lcd = new QLCDNumber(e_status);
+            lcd->display(devcurrent["status"].toObject()[key].toInt());
+            s_layout->addWidget(lcd);
+        }
+        if((instruction.value(key).toObject().value(tr("max")).toInt(0)-instruction.value(key).toObject().value(tr("min")).toInt(0))==1){
             QPushButton* button = new QPushButton(e_status);
             button->setCheckable(true);
             button->setDown(static_cast<bool>(devcurrent["status"].toObject()[key].toInt()));
-            button->setStyleSheet("QPushButton{background-color:green;}QPushButton:checked{background-color:red;}");
+            button->setStyleSheet("QPushButton{background-color:red;}QPushButton:checked{background-color:green;}");
             s_layout->addWidget(button);
             if(statusButtons == nullptr)
                 statusButtons = new QMap<QString,QPushButton*>();
@@ -113,12 +118,12 @@ void InteractiveIot::setStatusEditor(){
 }
 
 void InteractiveIot::setUpDefault(){
-    e_name->setText(tr(device->getName().c_str()));
+    e_name->setText(devcurrent["name"].toString());
     e_name->setAlignment(Qt::AlignRight);
     e_name->setStyleSheet("QLineEdit{width:100px;}");
     connect(e_name, SIGNAL(textChanged(const QString &)),this,SLOT(setName(const QString&)));
 
-    e_serial->setText(dserial);
+    e_serial->setText(devcurrent["serial"].toString());
     e_serial->setAlignment(Qt::AlignRight);
     connect(e_serial, SIGNAL(textChanged(const QString &)),this,SLOT(setSerial(const QString&)));
 }
@@ -198,26 +203,31 @@ void InteractiveIot::setDone(){
         messageBox.setFixedSize(500,200);
     }else {
         QMessageBox messageBox;
-        messageBox.critical(nullptr,"Error",jdevice);
+        messageBox.information(nullptr,"Error",jdevice);
         messageBox.setFixedSize(500,200);
         emit newDevice(jdevice);
-        //delete this->device;
-        //this->close();
     }
 }
 
 void InteractiveIot::statusProxyButton(const bool status){
     QString key = statusButtons->key(dynamic_cast<QPushButton*>(sender()));
-    devcurrent["status"].toObject()[key] = static_cast<int>(status);
-    setStatus(QJsonDocument(devcurrent));
+    QJsonObject cstatus = device->getStatus().object();
+    cstatus[key] = static_cast<int>(status);
+    devcurrent["status"] = cstatus;
+    setStatus(QJsonDocument(cstatus));
 }
 
 void InteractiveIot::statusProxySlider(const int status){
     QString key = statusSliders->key(dynamic_cast<QSlider*>(sender()));
-    devcurrent["status"].toObject()[key] = static_cast<int>(status);
-    setStatus(QJsonDocument(devcurrent));
+    QJsonObject cstatus = device->getStatus().object();
+    cstatus[key] = status;
+    devcurrent["status"] = cstatus;
+    setStatus(QJsonDocument(cstatus));
 }
-
+void InteractiveIot::closeEvent(QCloseEvent *event){
+    emit closing();
+    QWidget::closeEvent(event);
+}
 InteractiveIot::~InteractiveIot(){
 
     if(statusSliders){

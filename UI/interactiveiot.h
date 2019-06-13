@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QJsonArray>
+#include <QLCDNumber>
 class InteractiveIot : public QWidget
 {
     Q_OBJECT
@@ -19,13 +20,15 @@ public:
     InteractiveIot(QString JsonRooms ,IoT * eDevice=nullptr, QWidget *parent =nullptr);
     ~InteractiveIot();
 signals:
-    void newDevice(const QString device);
+    void newDevice(QString device);
+    void closing();
 private:
     QBoxLayout* createGroup(QWidget* first, QWidget* second);
     QLabel* setQLabel(QString text);
     void setUpDefault();
     void clearLayout(QLayout* to_clean);
     void lupdate();
+    void closeEvent(QCloseEvent* event);
 
 private slots:
     void setStatusEditor();

@@ -4,9 +4,8 @@
 #include <QApplication>
 int main(int argc, char *argv[])
 {
-    QModel model("/home/gian/Uni/Pao/Qontainer/IoT.json");
     QApplication a(argc, argv);
-    InteractiveIot iot(QString::fromStdString(model.getAllRooms()));
-    iot.show();
+    MainWindow w;
+    w.show();
     return a.exec();
 }

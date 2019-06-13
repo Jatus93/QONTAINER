@@ -11,7 +11,7 @@ int QModel::rowCount(const QModelIndex &parent) const{
 
 int QModel::columnCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-    return 3;
+    return 4;
 }
 
 QVariant QModel::data(const QModelIndex &index, int role) const{
@@ -24,7 +24,9 @@ QVariant QModel::data(const QModelIndex &index, int role) const{
         if(index.column() == 0)
             return QString::fromStdString(dev->getName());
         if(index.column() == 1)
-            return (tr(getDeviceStatus(index.row()).c_str()));
+            return QString::fromStdString(dev->getRoom());
+        if(index.column() == 2)
+            return QString(dev->getStatus().toJson(QJsonDocument::Compact));
     }
     return QVariant();
 }
@@ -34,8 +36,10 @@ QVariant QModel::headerData(int section, Qt::Orientation orientation, int role) 
         return QVariant();
     if(orientation == Qt::Horizontal){
         if(section == 0)
-            return tr("Nome dispositivo");
+            return tr("Name");
         if(section == 1)
+            return tr("Room");
+        if(section == 2)
             return tr("Status");
     }
     if(orientation == Qt::Vertical){
@@ -59,12 +63,12 @@ bool QModel::setData(const QModelIndex &index, const QVariant &value, int role){
             device = iotdev[row];
         } catch (std::out_of_range& e) {
             if(strcmp(e.what(), "Index is out of range")){
-                addDevice(value.toString().toStdString());
+                bool result = addDevice(value.toString().toStdString());
                 emit dataChanged(index,index,{role});
-                return true;
+                return result;
             }
         }
-        QJsonDocument instructions = QJsonDocument::fromVariant(value);
+        QJsonDocument instructions = QJsonDocument::fromVariant(QJsonDocument::fromVariant(value).object()["status"].toVariant());
         device->setDevice(instructions);
         emit dataChanged(index,index,{role});
         return true;

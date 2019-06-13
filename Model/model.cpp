@@ -144,6 +144,10 @@ bool Model::load(const std::string &file_path){
         }
 
     }
+    int i =0 ;
+    while(rooms.size()>0){
+        rooms.deleteElementAt(i);
+    }
     std::ifstream IoTfile(file_path);
     if(IoTfile.is_open()){
         std::string devices;
@@ -189,7 +193,7 @@ bool Model::addDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
     Iterator<IoT*> dev = iotdev.searchSerial(device.object()["serial"].toString().toStdString());
     if(dev != nullptr)
-        iotdev.deleteElementAt(dev);
+        return false;
     try {
         IoT* rDevice = IoTBuilder::getDevice(device);
         iotdev.pushBack(rDevice);
@@ -301,7 +305,7 @@ int Model::size() const{
     return iotdev.size();
 }
 IoT* Model::getElementAt(int i) const{
-    return iotdev[i];
+    return iotdev[i]->clone();
 }
 Model::~Model(){
     IoTBuilder::builderCleaner();

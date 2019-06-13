@@ -5,6 +5,7 @@
 #include <QTabBar>
 #include <QSortFilterProxyModel>
 #include <QTableWidget>
+#include <QHeaderView>
 #include <QWindow>
 #include "../QModel/qmodel.h"
 #include "interactiveiot.h"
@@ -13,18 +14,25 @@ class MainContent : public QTabWidget
 {
     Q_OBJECT
 private:
+    InteractiveIot * addOrEdit;
     QModel* data;
     void fillTabs();
     QSortFilterProxyModel *proxyModel;
-    QList<int> tabIndex;
+    QList<QTableView*> tabIndex;
+    void redrawAll();
+private slots:
+    void doubleClickedRow(const QModelIndex& index);
+    void resetAeEW();
 public:
     explicit MainContent(QModel* eData=nullptr, QWidget *parent = nullptr);
+    ~MainContent();
     void load(QString filepath);
     void save(QString filepath);
 public slots:
+    void showEditOrAddEntryDialog(int index=-1);
     void showAddEntryDialog();
     void addEntry(QString device);
-    void editEntry();
+    void editEntry(QString device);
     void removeEntry();
 
 signals:

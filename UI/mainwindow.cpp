@@ -8,15 +8,19 @@ MainWindow::MainWindow()
     setCentralWidget(widget);
     QModel* data= new QModel(this);
     mainContent = new MainContent(data,this);
-    QVBoxLayout *layout = new QVBoxLayout;
+    QGridLayout *layout = new QGridLayout;
     QLabel* info = new QLabel(this);
     info->setText(tr("Ci sono ")+QString::number(data->size())+tr(" IoT device online"));
-    layout->addWidget(info);
+    QPushButton* addIot = new QPushButton(tr("add device"),this);
+    layout->addWidget(info,0,0);
+    layout->addWidget(addIot,0,1);
     layout->addWidget(mainContent);
+    layout->setRowStretch(0,1);
     widget->setLayout(layout);
 
     createActions();
     createMenus();
+    connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
 
     setWindowTitle(tr("QContainer"));
     setMinimumSize(160, 160);
