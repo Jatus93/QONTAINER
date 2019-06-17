@@ -1,9 +1,15 @@
 language: cpp
 dist: xenial
 
+before_script:
+ - sudo apt-get update
+ - sudo apt-get upgrade 
+ - sudo apt-get install build-essential
+ - sudo apt-get install qtcreator
+ - sudo apt-get install qt5-default
+ 
 script:
- - qmake Qontainer.pro
- - make
-
+ - qmake -o Makefile ./QONTAINER/Qontainer.pro
+ 
 notifications:
   webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
