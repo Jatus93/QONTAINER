@@ -8,7 +8,7 @@ before_script:
  - sudo apt-get install -y qt5-default
  
 script:
- - qmake -o Makefile ./QONTAINER/Qontainer.pro
+ - qmake -o Makefile Qontainer.pro
  
 notifications:
   webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
