@@ -22,6 +22,7 @@ const QJsonDocument& Shutter::getDeviceInstruction() const{
 }
 
 void Shutter::setDevice(const QJsonDocument& instruction) noexcept(false){
+    QString instr = instruction.toJson();
     int value = instruction.object()["height"].toInt(0);
 
     if(value<min || value>max)

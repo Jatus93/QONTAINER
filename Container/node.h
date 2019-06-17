@@ -7,7 +7,7 @@ private:
     friend class Container<T>;
     friend class Iterator<T>;
     const bool first;
-    const T& data;
+    T data;
     Node<T>* previous;
     Node<T>* next;
     /**
@@ -16,7 +16,8 @@ private:
  * @param fPrevious
  * @param fNext
  */
-    Node(const T& fData,Node<T>* fPrevious=nullptr,Node<T>* fNext=nullptr):data(fData),first(false){
+    Node(const T& fData,Node<T>* fPrevious=nullptr,Node<T>* fNext=nullptr):first(false){
+        data = fData;
         previous = fPrevious;
         next = fNext;
     }
@@ -25,11 +26,12 @@ private:
  * @brief Node
  * @param c
  */
-    Node(const Node& c):data(c.data),first(c.first){
+    Node(const Node& c):first(c.first){
+        data = c.data;
         this->previous = c.previous;
         this->next = c.next;
     }
-    Node():data(data),first(true){
+    Node():first(true){
         previous = this;
         next = this;
     }

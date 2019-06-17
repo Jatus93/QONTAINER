@@ -129,14 +129,14 @@ public:
      * @param index
      * @return const Iterator
      */
-    const Iterator<T>* getConstIteratorAt(int index) const;
+    const Iterator<T>* getConstIteratorAt(int index =0) const;
 
     /**
      * @brief getIteratorAt
      * @param index
      * @return
      */
-    Iterator<T>* getIteratorAt(int index);
+    Iterator<T>* getIteratorAt(int index = 0);
     /**
      * @brief size
      * @return
@@ -178,8 +178,8 @@ template <class T> void Container<T>::pushBack(const T& value){
 }
 
 template <class T> const Iterator<T>& Container<T>::search(const T& value) const{
-    const Iterator<T> it = getConstIterator();
-    while((&(*it) != &value) && (it!=nullptr))
+    const Iterator<T> it(getConstIterator());
+    while(it!=nullptr && it.getData()!=value)
         it++;
     return *(new Iterator<T>(it));
 }
@@ -214,11 +214,11 @@ template <class T> void Container<T>::deleteElementAt(const Iterator<T>& it){
 }
 
 template <class T> Iterator<T>* Container<T>::getIterator(){
-    return getIteratorAt(0);
+    return getIteratorAt();
 }
 
 template <class T> const Iterator<T>* Container<T>::getConstIterator() const{
-    return getConstIteratorAt(0);
+    return getConstIteratorAt();
 }
 
 template <class T> const Iterator<T>* Container<T>::getConstIteratorAt(int index) const{
