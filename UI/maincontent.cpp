@@ -20,6 +20,9 @@ void MainContent::fillTabs(){
     tableViewAll->verticalHeader()->hide();
     tableViewAll->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableViewAll->setSelectionMode(QAbstractItemView::SingleSelection);
+    tableViewAll->setItemDelegate(new CustomDelegate());
+    QHeaderView *vHeader = tableViewAll->verticalHeader();
+    vHeader->setSectionResizeMode(QHeaderView::ResizeMode::Interactive);
     addTab(tableViewAll,tr("&All device"));
     connect(tableViewAll,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(doubleClickedRow(const QModelIndex&)));
     foreach (auto room, rooms) {
@@ -37,11 +40,25 @@ void MainContent::fillTabs(){
         tableView->verticalHeader()->hide();
         tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-
+        connect(tableView->selectionModel(),&QItemSelectionModel::selectionChanged,this, &MainContent::selectionChanged);
+        connect(this, &QTabWidget::currentChanged, this, [this](int tabIndex) {
+            auto *tableView = qobject_cast<QTableView *>(widget(tabIndex));
+            if (tableView)
+                emit selectionChanged(tableView->selectionModel()->selection());
+        });
         tabIndex.append(tableView);
         addTab(tableView,strRoom);
         connect(tableView,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(doubleClickedRow(const QModelIndex&)));
+        tableView->setItemDelegate(new CustomDelegate());
+        vHeader = tableView->verticalHeader();
+        vHeader->setSectionResizeMode(QHeaderView::ResizeMode::Interactive);
     }
+    connect(tableViewAll->selectionModel(),&QItemSelectionModel::selectionChanged,this, &MainContent::selectionChanged);
+    connect(this, &QTabWidget::currentChanged, this, [this](int tabIndex) {
+        auto *tableView = qobject_cast<QTableView *>(widget(tabIndex));
+        if (tableView)
+            emit selectionChanged(tableView->selectionModel()->selection());
+    });
 }
 
 void MainContent::redrawAll(){
@@ -51,23 +68,28 @@ void MainContent::redrawAll(){
     tabIndex.clear();
     fillTabs();
 }
+
 void MainContent::load(QString filepath){
     data->load(filepath.toStdString());
     redrawAll();
 }
 
 void MainContent::save(QString filepath){
-    data->save(filepath.toStdString());
+    if(filepath=="")
+        data->save();
+    else{
+        data->save(filepath.toStdString());
+        data->load(filepath.toStdString());
+    }
 }
 
-void MainContent::showEditOrAddEntryDialog(int index){
+void MainContent::showEditOrAddEntryDialog(QString device){
     if(addOrEdit == nullptr){
-        if(index>=0){
-            addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),data->getElementAt(index));
+        addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,this);
+        if(device != ""){
             addOrEdit->setWindowTitle(tr("Add a new Device"));
             connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(editEntry(QString)));
-        }else{
-            addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()));
+        }else {
             addOrEdit->setWindowTitle(tr("Add a new Device"));
             connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(addEntry(QString)));
         }
@@ -88,26 +110,48 @@ void MainContent::addEntry(QString device){
     QString string_data = QString::fromStdString(data->getDeviceFiltered("{\"serial\":\""+jDevice.object()["serial"].toString().toStdString()+"\"}"));
     if(QJsonDocument::fromJson(string_data.toUtf8()).object()["serial"].toString()!=jDevice.object()["serial"].toString()){
         data->insertRows(0,1,QModelIndex());
-        editEntry(device);
+        //editEntry(device);
+        QModelIndex index = data->index(0,0,QModelIndex());
+        data->setData(index,device,Qt::UserRole);
+        addOrEdit->close();
+        addOrEdit = nullptr;
+        redrawAll();
     } else {
         QMessageBox::information(this,tr("Device alredy registred"),tr("This serial has been used already"));
     }
 }
 void MainContent::editEntry(QString device){
-    QModelIndex index = data->index(0,0,QModelIndex());
-    data->setData(index,device,Qt::EditRole);
+    QTableView *temp = static_cast<QTableView*>(currentWidget());
+    QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
+    QItemSelectionModel *selectionModel = temp->selectionModel();
+
+    QModelIndex index = selectionModel->selectedRows().first();
+    proxy->setData(index,device,Qt::EditRole);
     addOrEdit->close();
     addOrEdit = nullptr;
     redrawAll();
 }
 void MainContent::doubleClickedRow(const QModelIndex& index){
-    showEditOrAddEntryDialog(index.row());
+    QTableView *w = dynamic_cast<QTableView*>(sender());
+    auto ldata =  w->model()->data(index,Qt::EditRole);
+    showEditOrAddEntryDialog(ldata.value<QString>());
 }
 void MainContent::resetAeEW(){
     addOrEdit = nullptr;
 }
 void MainContent::removeEntry(){
 
+    QTableView *temp = static_cast<QTableView*>(currentWidget());
+    QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
+    QItemSelectionModel *selectionModel = temp->selectionModel();
+
+    QModelIndexList indexes = selectionModel->selectedRows();
+
+    foreach (QModelIndex index, indexes) {
+        int row = index.row();
+        proxy->removeRows(row, 1, QModelIndex());
+    }
+    redrawAll();
 }
 MainContent::~MainContent(){
     delete proxyModel;

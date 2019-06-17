@@ -1,6 +1,6 @@
 #include "interactiveiot.h"
 
-InteractiveIot::InteractiveIot(QString JsonRooms,IoT* eDevice, QWidget *parent):QWidget (parent)
+InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *parent):QDialog (parent,Qt::Dialog)
 {
     statusButtons = nullptr;
     statusSliders = nullptr;
@@ -14,8 +14,8 @@ InteractiveIot::InteractiveIot(QString JsonRooms,IoT* eDevice, QWidget *parent):
     classChoose = new QComboBox(this);
     wlayout = new QFormLayout(this);
     std::list<std::string> dlist = IoTBuilder::getKeys();
-    if(eDevice !=nullptr){
-        device = eDevice;
+    if(eDevice != ""){
+        device = IoTBuilder::getDevice(QJsonDocument::fromJson(eDevice.toUtf8()));
     }else{
         device = IoTBuilder::getDevice(QJsonDocument::fromJson("{\"class\":\"dimmerableLight\",\"name\": \"Change me\", \"room\": \"Change me\", \"serial\": \"Change me\"}"));
     }
@@ -38,7 +38,7 @@ InteractiveIot::InteractiveIot(QString JsonRooms,IoT* eDevice, QWidget *parent):
         }
     }
     e_room->setEditable(true);
-    if(eDevice !=  nullptr){
+    if(eDevice != ""){
         e_serial->setDisabled(true);
         classChoose->setDisabled(true);
     }
@@ -54,6 +54,7 @@ InteractiveIot::InteractiveIot(QString JsonRooms,IoT* eDevice, QWidget *parent):
     wlayout->addWidget(done);
     wlayout->addWidget(e_status);
     this->setLayout(wlayout);
+    this->setWindowModality(Qt::WindowModal);
 }
 
 QLabel* InteractiveIot::setQLabel(QString text){
@@ -202,9 +203,6 @@ void InteractiveIot::setDone(){
         messageBox.critical(nullptr,"Error","Serial is not valid");
         messageBox.setFixedSize(500,200);
     }else {
-        QMessageBox messageBox;
-        messageBox.information(nullptr,"Error",jdevice);
-        messageBox.setFixedSize(500,200);
         emit newDevice(jdevice);
     }
 }

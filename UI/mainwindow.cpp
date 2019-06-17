@@ -12,8 +12,10 @@ MainWindow::MainWindow()
     QLabel* info = new QLabel(this);
     info->setText(tr("Ci sono ")+QString::number(data->size())+tr(" IoT device online"));
     QPushButton* addIot = new QPushButton(tr("add device"),this);
+    QPushButton* RemoveIot = new QPushButton(tr("remove device"),this);
     layout->addWidget(info,0,0);
     layout->addWidget(addIot,0,1);
+    layout->addWidget(RemoveIot,0,2);
     layout->addWidget(mainContent);
     layout->setRowStretch(0,1);
     widget->setLayout(layout);
@@ -21,10 +23,11 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
     connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
+    connect(RemoveIot,SIGNAL(clicked(bool)),mainContent,SLOT(removeEntry()));
 
     setWindowTitle(tr("QContainer"));
-    setMinimumSize(160, 160);
-    resize(480, 320);
+    setMinimumSize(640, 480);
+    resize(640, 480);
 }
 
 #ifndef QT_NO_CONTEXTMENU
@@ -34,6 +37,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(cutAct);
     menu.addAction(copyAct);
     menu.addAction(pasteAct);
+    menu.addAction(removeAct);
     menu.exec(event->globalPos());
 }
 #endif // QT_NO_CONTEXTMENU
@@ -49,12 +53,23 @@ void MainWindow::open()
     QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),
                                                     "/home",
                                                     ("JSonFile (*.json)"));
-    mainContent->load(fileName);
+    if(!fileName.isEmpty())
+        mainContent->load(fileName);
 }
 
 void MainWindow::save()
 {
-    infoLabel->setText(tr("Invoked <b>File|Save</b>"));
+    //infoLabel->setText(tr("Invoked <b>File|Save</b>"));
+    mainContent->save();
+}
+
+void MainWindow::saveAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,("Save as"),
+                                                    "/home",
+                                                    ("JSonFile (*.json)"));
+    if(!fileName.isEmpty())
+        mainContent->save(fileName);
 }
 
 void MainWindow::cut()
@@ -102,6 +117,11 @@ void MainWindow::createActions()
     saveAct->setStatusTip(tr("Save the document to disk"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
 
+    saveAsAct = new QAction(tr("&Save as..."), this);
+    saveAsAct->setShortcuts(QKeySequence::SaveAs);
+    saveAsAct->setStatusTip(tr("Save the document to disk"));
+    connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
+
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
@@ -125,6 +145,11 @@ void MainWindow::createActions()
                               "selection"));
     connect(pasteAct, &QAction::triggered, this, &MainWindow::paste);
 
+    removeAct = new QAction(tr("&Delete"));
+    removeAct->setShortcut(QKeySequence::Delete);
+    removeAct->setStatusTip(tr("Remove selected contents"));
+    connect(removeAct, SIGNAL(triggered()),mainContent,SLOT(removeEntry()));
+
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
@@ -141,6 +166,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
+    fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 

@@ -13,11 +13,11 @@
 #include <QSlider>
 #include <QJsonArray>
 #include <QLCDNumber>
-class InteractiveIot : public QWidget
+class InteractiveIot : public QDialog
 {
     Q_OBJECT
 public:
-    InteractiveIot(QString JsonRooms ,IoT * eDevice=nullptr, QWidget *parent =nullptr);
+    InteractiveIot(QString JsonRooms ,QString eDevice="", QWidget *parent =nullptr);
     ~InteractiveIot();
 signals:
     void newDevice(QString device);

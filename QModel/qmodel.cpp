@@ -11,7 +11,7 @@ int QModel::rowCount(const QModelIndex &parent) const{
 
 int QModel::columnCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-    return 4;
+    return 3;
 }
 
 QVariant QModel::data(const QModelIndex &index, int role) const{
@@ -19,14 +19,18 @@ QVariant QModel::data(const QModelIndex &index, int role) const{
         return QVariant();
     if(index.row()>size() || index.row()<0 )
         return QVariant();
+    const IoT& dev = *getElementAt(index.row());
     if(role == Qt::DisplayRole){
-        const auto dev = getElementAt(index.row());
         if(index.column() == 0)
-            return QString::fromStdString(dev->getName());
+            return QString::fromStdString(dev.getName());
         if(index.column() == 1)
-            return QString::fromStdString(dev->getRoom());
+            return QString::fromStdString(dev.getRoom());
         if(index.column() == 2)
-            return QString(dev->getStatus().toJson(QJsonDocument::Compact));
+            return QString(dev.getStatus().toJson(QJsonDocument::Compact));
+        if(index.column() == 3)
+            return QString(dev.JsonSerialize().toJson(QJsonDocument::Compact));
+    }else if(role == Qt::EditRole) {
+        return QString(dev.JsonSerialize().toJson(QJsonDocument::Compact));
     }
     return QVariant();
 }
@@ -55,23 +59,29 @@ bool QModel::insertRows(int position, int rows, const QModelIndex &index){
     return true;
 }
 
+bool QModel::removeRows(int position, int rows, const QModelIndex &index)
+{
+    Q_UNUSED(index);
+    beginRemoveRows(QModelIndex(), position, position + rows - 1);
+
+    for (int row = 0; row < rows; ++row){
+        delete iotdev[position+row];
+        iotdev.deleteElementAt(position+row);
+    }
+    endRemoveRows();
+    emit dataChanged(index,index,{Qt::EditRole});
+    return true;
+}
+
 bool QModel::setData(const QModelIndex &index, const QVariant &value, int role){
+    bool result = false;
     if(index.isValid() && role == Qt::EditRole){
         int row = index.row();
-        IoT* device = nullptr;
-        try {
-            device = iotdev[row];
-        } catch (std::out_of_range& e) {
-            if(strcmp(e.what(), "Index is out of range")){
-                bool result = addDevice(value.toString().toStdString());
-                emit dataChanged(index,index,{role});
-                return result;
-            }
-        }
-        QJsonDocument instructions = QJsonDocument::fromVariant(QJsonDocument::fromVariant(value).object()["status"].toVariant());
-        device->setDevice(instructions);
-        emit dataChanged(index,index,{role});
-        return true;
+        result = setDeviceStatus(value.toString().toStdString(),row);
     }
-    return false;
+    if(index.isValid() && role == Qt::UserRole){
+        result = addDevice(value.toString().toStdString());
+    }
+    emit dataChanged(index,index,{Qt::EditRole});
+    return result;
 }

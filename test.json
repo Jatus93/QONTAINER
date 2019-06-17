@@ -1,0 +1,29 @@
+{"0":{
+    "class": "dimmerableLight",
+    "name": "ttetete",
+    "room": "room25",
+    "serial": "tetetetete me",
+    "status": {
+        "brightness": 60,
+        "power": 1
+    }
+}
+,"1":{
+    "class": "shutter",
+    "name": "CCCCCC10",
+    "room": "room25",
+    "serial": "CCCCCC10",
+    "status": {
+        "height": 0
+    }
+}
+,"2":{
+    "class": "shutter",
+    "name": "CCCCCC11",
+    "room": "room10",
+    "serial": "CCCCCC11",
+    "status": {
+        "height": 0
+    }
+}
+}

@@ -7,8 +7,10 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QWindow>
+#include <QDebug>
 #include "../QModel/qmodel.h"
 #include "interactiveiot.h"
+#include "customdelegate.h"
 
 class MainContent : public QTabWidget
 {
@@ -27,9 +29,9 @@ public:
     explicit MainContent(QModel* eData=nullptr, QWidget *parent = nullptr);
     ~MainContent();
     void load(QString filepath);
-    void save(QString filepath);
+    void save(QString filepath="");
 public slots:
-    void showEditOrAddEntryDialog(int index=-1);
+    void showEditOrAddEntryDialog(QString device="");
     void showAddEntryDialog();
     void addEntry(QString device);
     void editEntry(QString device);

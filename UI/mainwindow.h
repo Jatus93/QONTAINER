@@ -27,6 +27,7 @@ private slots:
     void newFile();
     void open();
     void save();
+    void saveAs();
     void cut();
     void copy();
     void paste();
@@ -42,12 +43,14 @@ private:
     QAction *newAct;
     QAction *openAct;
     QAction *saveAct;
+    QAction *saveAsAct;
     QAction *exitAct;
     QAction *cutAct;
     QAction *copyAct;
     QAction *pasteAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
+    QAction *removeAct;
     QLabel *infoLabel;
 };
 #endif // MAINWINDOW_H

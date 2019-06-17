@@ -196,7 +196,7 @@ bool Model::addDevice(const std::string &json_device){
         return false;
     try {
         IoT* rDevice = IoTBuilder::getDevice(device);
-        iotdev.pushBack(rDevice);
+        iotdev.pushFront(rDevice);
         std::string room = rDevice->getRoom();
         addRoom(room);
     } catch (std::runtime_error* e) {
@@ -220,6 +220,9 @@ bool Model::setDeviceStatus(const std::string &status){
     const IoT* const_ptr = (*it);
     IoT* ptr = const_cast<IoT*>(const_ptr);
     try {
+        ptr->setName(j_status.object()["name"].toString().toStdString());
+        ptr->setRoom(j_status.object()["room"].toString().toStdString());
+        addRoom(j_status.object()["room"].toString().toStdString());
         ptr->setDevice(command);
         std::string after = ptr->getStatus().toJson().toStdString();
         ok = command.toJson().toStdString() == after;
@@ -228,6 +231,30 @@ bool Model::setDeviceStatus(const std::string &status){
         ok = false;
     }
     return ok;
+}
+
+bool Model::setDeviceStatus(const std::string& status, int index){
+    bool result = false;
+    IoT* device = nullptr;
+    try {
+        device = iotdev[index];
+    } catch (std::out_of_range& e) {
+        if(strcmp(e.what(), "Index is out of range")){
+            result = addDevice(status);
+            return result;
+        }
+    }
+    QJsonObject jDevice(QJsonDocument::fromJson(status.c_str()).object());
+    try {
+        device->setName(jDevice["name"].toString().toStdString());
+        device->setRoom(jDevice["room"].toString().toStdString());
+        device->setDevice(QJsonDocument(jDevice["status"].toObject()));
+    } catch (const std::invalid_argument & e) {
+        Q_UNUSED(e)
+        result = false;
+    }
+
+    return  result;
 }
 /**
  * @brief Model::removeDevice
@@ -238,6 +265,7 @@ bool Model::removeDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
     const Iterator<IoT*> it = iotdev.searchSerial(device.object()["serial"].toString().toStdString());
     try{
+        delete *it;
         iotdev.deleteElementAt(it);
     }catch(std::runtime_error* e){
         std::cout<<e->what()<<'\n';
@@ -267,10 +295,10 @@ const std::string Model::getAllDevicesClass() const {
     Iterator<std::string> it = devices.getConstIterator();
     std::string toReturn = "{\"devices\":[";
     while(it!=nullptr){
-            toReturn += "\""+it.getData()+"\"";
-            it++;
-            if(it!=nullptr)
-                toReturn += ",";
+        toReturn += "\""+it.getData()+"\"";
+        it++;
+        if(it!=nullptr)
+            toReturn += ",";
     }
     toReturn += "]}";
     return toReturn;
@@ -280,10 +308,10 @@ const std::string Model::getAllRooms() const {
     Iterator<std::string> it = rooms.getConstIterator();
     std::string toReturn = "{\"rooms\":[";
     while(it!=nullptr){
-            toReturn += "\""+it.getData()+"\"";
-            it++;
-            if(it!=nullptr)
-                toReturn += ",";
+        toReturn += "\""+it.getData()+"\"";
+        it++;
+        if(it!=nullptr)
+            toReturn += ",";
     }
     toReturn += "]}";
     return toReturn;

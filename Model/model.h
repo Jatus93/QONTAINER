@@ -31,6 +31,7 @@ public:
     bool addDevice(const std::string& json_device);
     bool removeDevice(const std::string& json_device);
     bool setDeviceStatus(const std::string& status);
+    bool setDeviceStatus(const std::string& status, int index);
     const std::string getSerializzation() const;
     const std::string getDeviceStatus(const int index) const;
     const std::string getDeviceFiltered(const std::string values = "") const;
