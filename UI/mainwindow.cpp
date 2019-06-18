@@ -9,11 +9,11 @@ MainWindow::MainWindow()
     QModel* data= new QModel(this);
     mainContent = new MainContent(data,this);
     QGridLayout *layout = new QGridLayout;
-    QLabel* info = new QLabel(this);
-    info->setText(tr("Ci sono ")+QString::number(data->size())+tr(" IoT device online"));
+    infoLabel = new QLabel(this);
+    infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT device online"));
     QPushButton* addIot = new QPushButton(tr("add device"),this);
     QPushButton* RemoveIot = new QPushButton(tr("remove device"),this);
-    layout->addWidget(info,0,0);
+    layout->addWidget(infoLabel,0,0);
     layout->addWidget(addIot,0,1);
     layout->addWidget(RemoveIot,0,2);
     layout->addWidget(mainContent);
@@ -24,6 +24,7 @@ MainWindow::MainWindow()
     createMenus();
     connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
     connect(RemoveIot,SIGNAL(clicked(bool)),mainContent,SLOT(removeEntry()));
+    connect(mainContent,&MainContent::update,this,[this](){infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT device online"));});
 
     setWindowTitle(tr("QContainer"));
     setMinimumSize(640, 480);

@@ -30,6 +30,7 @@ public:
     ~MainContent();
     void load(QString filepath);
     void save(QString filepath="");
+    int size();
 public slots:
     void showEditOrAddEntryDialog(QString device="");
     void showAddEntryDialog();
@@ -39,6 +40,7 @@ public slots:
 
 signals:
     void selectionChanged (const QItemSelection &selected);
+    void update();
 };
 
 #endif // MAINCONTENT_H

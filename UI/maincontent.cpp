@@ -67,6 +67,7 @@ void MainContent::redrawAll(){
     }
     tabIndex.clear();
     fillTabs();
+    emit update();
 }
 
 void MainContent::load(QString filepath){
@@ -153,6 +154,11 @@ void MainContent::removeEntry(){
     }
     redrawAll();
 }
+
+int MainContent::size(){
+    return data->size();
+}
+
 MainContent::~MainContent(){
     delete proxyModel;
     if(addOrEdit != nullptr)

@@ -75,3 +75,5 @@ unix:!macx: LIBS += -L$$OUT_PWD/../QModel/ -lQModel
 
 INCLUDEPATH += $$PWD/../QModel
 DEPENDPATH += $$PWD/../QModel
+
+RESOURCES +=
