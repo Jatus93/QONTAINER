@@ -95,7 +95,6 @@ void InteractiveIot::setStatusEditor(){
             QPushButton* button = new QPushButton(e_status);
             button->setCheckable(true);
             button->setDown(static_cast<bool>(devcurrent["status"].toObject()[key].toInt()));
-            button->setStyleSheet("QPushButton{background-color:red;}QPushButton:checked{background-color:green;}");
             s_layout->addWidget(button);
             if(statusButtons == nullptr)
                 statusButtons = new QMap<QString,QPushButton*>();

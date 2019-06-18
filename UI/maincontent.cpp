@@ -12,7 +12,7 @@ MainContent::MainContent(QModel* eData,QWidget *parent) : QTabWidget(parent)
 void MainContent::fillTabs(){
     QJsonObject jrooms((QJsonDocument::fromJson(data->getAllRooms().c_str())).object());
     QJsonArray rooms =jrooms["rooms"].toArray();
-    QTableView *tableViewAll = new QTableView;
+    QTableView *tableViewAll = new QTableView(this);
     tabIndex.append(tableViewAll);
     tableViewAll->setModel(data);
     tableViewAll->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -32,7 +32,7 @@ void MainContent::fillTabs(){
         proxyModel->setFilterRegExp(QRegExp(strRoom, Qt::CaseInsensitive));
         proxyModel->setFilterKeyColumn(1);
 
-        QTableView* tableView = new QTableView;
+        QTableView* tableView = new QTableView(this);
         tableView->setModel(proxyModel);
 
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
