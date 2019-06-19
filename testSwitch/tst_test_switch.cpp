@@ -70,7 +70,7 @@ void test_Switch::test_class(){
 void test_Switch::test_Instruction(){
     QJsonDocument instructions = button->getDeviceInstruction();
     QVERIFY(instructions.object().value("power").toObject().value("min").toInt() == 0);
-    QVERIFY(instructions.object().value("power").toObject().value("max").toInt() == 0);
+    QVERIFY(instructions.object().value("power").toObject().value("max").toInt() == 1);
 }
 
 void test_Switch::test_getStatus(){
