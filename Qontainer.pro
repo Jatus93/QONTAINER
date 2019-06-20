@@ -1,3 +1,4 @@
+TARGET = Qontainer
 TEMPLATE = subdirs
 CONFIG += c++11
 
