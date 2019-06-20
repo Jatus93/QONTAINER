@@ -1,6 +1,11 @@
-QWidget{
-    background: #E3E3E3;
+QMessageBox > QPushButton {
+    background: green;
 }
-QPushButton{
-    background: #BFBFBF;
+QPushButton.toggle {
+    width: 20px;
+    background: red;
+}
+
+QPushButton.toggle:pressed, QPushButton.toggle:checked {
+    background: green;
 }

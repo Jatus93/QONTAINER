@@ -108,6 +108,8 @@ bool QModel::save(QString path){
 
 bool QModel::load(QString path){
     bool result = false;
+    beginRemoveRows(QModelIndex(), 0, size() - 1);
+    endRemoveRows();
     if(path=="")
         result = Model::load();
     else {
@@ -115,6 +117,9 @@ bool QModel::load(QString path){
         settings->setValue("last_file",path);
         settings->sync();
     }
+    beginInsertRows(QModelIndex(),0,size()-1);
+    endInsertRows();
+    emit dataChanged(QModelIndex(),QModelIndex(),{Qt::EditRole});
     return result;
 }
 

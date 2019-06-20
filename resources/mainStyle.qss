@@ -1,4 +1,0 @@
-MainWindow, QDialog
-{
-	background: #B81A02;
-}

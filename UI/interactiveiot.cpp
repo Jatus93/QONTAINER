@@ -86,21 +86,30 @@ void InteractiveIot::setStatusEditor(){
     foreach(const auto key,instruction.keys()){
         QLabel * field = new QLabel(key,e_status);
         s_layout->addWidget(field);
+        //Read only devices
         if((instruction.value(key).toObject().value(tr("max")).toInt(0)-instruction.value(key).toObject().value(tr("min")).toInt(0))==0){
             QLCDNumber * lcd = new QLCDNumber(e_status);
             lcd->display(devcurrent["status"].toObject()[key].toInt());
             s_layout->addWidget(lcd);
         }
+        //On or Off status
         if((instruction.value(key).toObject().value(tr("max")).toInt(0)-instruction.value(key).toObject().value(tr("min")).toInt(0))==1){
             QPushButton* button = new QPushButton(e_status);
             button->setCheckable(true);
+            button->setMaximumWidth(60);
+            button->setText("off");
+            button->setProperty("class","toggle");
             button->setDown(static_cast<bool>(devcurrent["status"].toObject()[key].toInt()));
+            if(button->isDown())
+                button->setText("on");
             s_layout->addWidget(button);
             if(statusButtons == nullptr)
                 statusButtons = new QMap<QString,QPushButton*>();
             statusButtons->insert(key,button);
             connect(button,SIGNAL(toggled(const bool)),this,SLOT(statusProxyButton(const bool)));
+            connect(button,&QPushButton::toggled,this,[button](const bool status){status?button->setText("on"):button->setText("off");});
         }
+        //Status bar
         if((instruction.value(key).toObject().value(tr("max")).toInt()-instruction.value(key).toObject().value(tr("min")).toInt())>1){
             QSlider* slider = new QSlider(Qt::Orientation::Horizontal,e_status);
             slider->setMinimum(instruction.value(key).toObject().value(tr("min")).toInt());

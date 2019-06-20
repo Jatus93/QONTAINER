@@ -7,6 +7,3 @@ SUBDIRS += \
     QModel \
     UI \
     Container \
-
-DISTFILES += \
-    .travis.yml

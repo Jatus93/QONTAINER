@@ -23,7 +23,6 @@ private:
     QMap<QString,QTableView*> tabIndex;
     void redrawAll();
 private slots:
-    void doubleClickedRow(const QModelIndex& index);
     void resetAeEW();
 public:
     explicit MainContent(QModel* eData=nullptr, QWidget *parent = nullptr);
@@ -37,6 +36,7 @@ public slots:
     void addEntry(QString device);
     void editEntry(QString device);
     void removeEntry();
+    void editSelectedRow();
 
 signals:
     void selectionChanged (const QItemSelection &selected);

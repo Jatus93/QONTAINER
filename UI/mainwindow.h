@@ -24,15 +24,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 #endif // QT_NO_CONTEXTMENU
 private slots:
-    void newFile();
     void open();
     void save();
     void saveAs();
-    void cut();
-    void copy();
-    void paste();
-    void about();
-    void aboutQt();
 private:
     QModel* data;
     void createActions();
@@ -40,17 +34,13 @@ private:
     MainContent * mainContent;
     QMenu *fileMenu;
     QMenu *helpMenu;
-    QAction *newAct;
     QAction *openAct;
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
-    QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *removeAct;
+    QAction *editAct;
     QLabel *infoLabel;
 };
 #endif // MAINWINDOW_H

@@ -6,20 +6,6 @@ MainContent::MainContent(QModel* eData,QWidget *parent) : QTabWidget(parent)
     else
         data = eData;
 
-    QTableView *tableViewAll = new QTableView(this);
-    tabIndex.insert(tr("&All device"),tableViewAll);
-    tableViewAll->setModel(data);
-    tableViewAll->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableViewAll->horizontalHeader()->setStretchLastSection(true);
-    tableViewAll->verticalHeader()->hide();
-    tableViewAll->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    tableViewAll->setSelectionMode(QAbstractItemView::SingleSelection);
-    tableViewAll->setItemDelegate(new CustomDelegate());
-    QHeaderView *vHeader = tableViewAll->verticalHeader();
-    vHeader->setSectionResizeMode(QHeaderView::ResizeMode::Interactive);
-    addTab(tableViewAll,tr("&All device"));
-    connect(tableViewAll,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(doubleClickedRow(const QModelIndex&)));
-    connect(tableViewAll->selectionModel(),&QItemSelectionModel::selectionChanged,this, &MainContent::selectionChanged);
     connect(this, &QTabWidget::currentChanged, this, [this](int tabIndex) {
         auto *tableView = qobject_cast<QTableView *>(widget(tabIndex));
         if (tableView)
@@ -32,12 +18,17 @@ MainContent::MainContent(QModel* eData,QWidget *parent) : QTabWidget(parent)
 void MainContent::fillTabs(){
     QJsonObject jrooms((QJsonDocument::fromJson(data->getAllRooms().c_str())).object());
     QJsonArray rooms =jrooms["rooms"].toArray();
+    rooms.push_front("All devices");
     foreach (auto room, rooms) {
         QString strRoom = room.toString();
         if(tabIndex.find(strRoom) == tabIndex.end()){
+            proxyModel = dynamic_cast<QSortFilterProxyModel *>(data);
             proxyModel = new QSortFilterProxyModel(this);
             proxyModel->setSourceModel(data);
-            proxyModel->setFilterRegExp(QRegExp(strRoom, Qt::CaseInsensitive));
+            if(room == "All devices")
+                proxyModel->setFilterRegExp(QRegExp(".*", Qt::CaseInsensitive));
+            else
+                proxyModel->setFilterRegExp(QRegExp(strRoom, Qt::CaseInsensitive));
             proxyModel->setFilterKeyColumn(1);
 
             QTableView* tableView = new QTableView(this);
@@ -56,8 +47,17 @@ void MainContent::fillTabs(){
             });
             tabIndex.insert(strRoom,tableView);
             addTab(tableView,strRoom);
-            connect(tableView,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(doubleClickedRow(const QModelIndex&)));
+            connect(tableView,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(editSelectedRow()));
             tableView->setItemDelegate(new CustomDelegate());
+        }
+    }
+    foreach(auto room, tabIndex.keys()){
+        if(!rooms.contains(room) && room!="All devices"){
+            tabIndex[room]->hide();
+            delete tabIndex[room];
+            tabIndex.remove(room);
+        }else {
+            tabIndex[room]->update();
         }
     }
 }
@@ -132,10 +132,17 @@ void MainContent::editEntry(QString device){
     fillTabs();
     emit update();
 }
-void MainContent::doubleClickedRow(const QModelIndex& index){
-    QTableView *w = dynamic_cast<QTableView*>(sender());
-    auto ldata =  w->model()->data(index,Qt::EditRole);
-    showEditOrAddEntryDialog(ldata.value<QString>());
+void MainContent::editSelectedRow(){
+    QTableView *temp = static_cast<QTableView*>(currentWidget());
+    QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
+    QItemSelectionModel *selectionModel = temp->selectionModel();
+
+    QModelIndexList indexes = selectionModel->selectedRows();
+    foreach (QModelIndex index, indexes) {
+        auto ldata = proxy->data(index,Qt::EditRole);
+        showEditOrAddEntryDialog(ldata.value<QString>());
+    }
+    emit update();
 }
 void MainContent::resetAeEW(){
     addOrEdit = nullptr;
@@ -147,12 +154,12 @@ void MainContent::removeEntry(){
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
     QModelIndexList indexes = selectionModel->selectedRows();
-
     foreach (QModelIndex index, indexes) {
         int row = index.row();
         proxy->removeRows(row, 1, QModelIndex());
     }
     emit update();
+
 }
 
 int MainContent::size(){
