@@ -2,6 +2,7 @@ QT       -= gui
 TARGET = QModel
 TEMPLATE = lib
 CONFIG += staticlib
+CONFIG += c++11
 HEADERS += \
     qmodel.h \
     model.h
