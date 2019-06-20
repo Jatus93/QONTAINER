@@ -21,7 +21,7 @@ const QJsonDocument& Shutter::getDeviceInstruction() const{
     return states;
 }
 
-void Shutter::setDevice(const QJsonDocument& instruction) noexcept(false){
+void Shutter::setDevice(const QJsonDocument& instruction) {
     QString instr = instruction.toJson();
     int value = instruction.object()["height"].toInt(0);
 

@@ -14,7 +14,7 @@ Switch::Switch(const QJsonDocument& initializer):IoT(initializer,lClass){
     }
 }
 
-void Switch::setDevice(const QJsonDocument& instruction) noexcept(false){
+void Switch::setDevice(const QJsonDocument& instruction) {
     int value = instruction.object().value("power").toInt(-1);
 
     if(value == -1)

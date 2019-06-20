@@ -18,8 +18,8 @@ public:
     static void builderCleaner();
     static IoT* getDevice(const QJsonDocument& device);
     static const std::list<std::string>& getKeys();
-    static IoT* build(const std::string& fSerial, const std::string& fClass, const std::string& fRoom="",const std::string& fName="")noexcept(false);
-    static IoT* build(const QJsonDocument& device) noexcept(false);
+    static IoT* build(const std::string& fSerial, const std::string& fClass, const std::string& fRoom="",const std::string& fName="");
+    static IoT* build(const QJsonDocument& device) ;
 };
 
 //#include "IoTBuilder.moc"

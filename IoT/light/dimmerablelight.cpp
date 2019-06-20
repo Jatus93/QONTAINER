@@ -20,7 +20,7 @@ const QJsonDocument& DimmerableLight::getDeviceInstruction() const{
     return states;
 }
 
-void DimmerableLight::setDevice(const QJsonDocument& instruction) noexcept(false){
+void DimmerableLight::setDevice(const QJsonDocument& instruction) {
     QJsonObject data(instruction.object());
     QJsonObject local(states.object());
     if(!data.isEmpty()){

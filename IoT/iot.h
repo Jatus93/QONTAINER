@@ -28,7 +28,7 @@ public:
     const std::string& getRoom() const;
     const std::string& getName() const;
     const QJsonDocument& getStatus() const;
-    virtual void setDevice(const QJsonDocument& instruction) noexcept(false) = 0;
+    virtual void setDevice(const QJsonDocument& instruction)  = 0;
     virtual const QJsonDocument& getDeviceInstruction() const = 0;
     virtual IoT* clone() const = 0;
     const QJsonDocument& JsonSerialize() const;

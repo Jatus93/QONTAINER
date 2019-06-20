@@ -14,7 +14,7 @@ public:
     Shutter(const std::string& fSerial, const std::string& fRoom="", const std::string& fName="");
     Shutter(const QJsonDocument& initializer);
     const QJsonDocument& getDeviceInstruction() const;
-    void setDevice(const QJsonDocument& instruction) noexcept(false);
+    void setDevice(const QJsonDocument& instruction) ;
     IoT* clone() const;
     static const std::string getClass();
 };

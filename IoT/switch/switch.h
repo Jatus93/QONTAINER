@@ -17,7 +17,7 @@ public:
     Switch(const QJsonDocument& initializer);
     const QJsonDocument& getDeviceInstruction() const;
     IoT* clone() const;
-    void setDevice(const QJsonDocument& instruction) noexcept(false);
+    void setDevice(const QJsonDocument& instruction) ;
     static const std::string getClass();
 };
 
