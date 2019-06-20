@@ -1,6 +1,14 @@
 #include "qmodel.h"
 
-QModel::QModel(QObject* parent):QAbstractTableModel(parent),Model(){}
+QModel::QModel(QObject* parent):QAbstractTableModel(parent),Model(){
+    settings = new QSettings(tr("Unipd"),tr("Qocontainer"));
+    QString current = settings->value("last_file").value<QString>();
+    if (settings->contains("last_file"))
+        Model::load(current.toStdString());
+    else {
+        settings->setValue("last_file",tr(""));
+    }
+}
 
 QModel::QModel(std::string file_path,QObject* parent):QAbstractTableModel(parent),Model(file_path){}
 
@@ -84,4 +92,37 @@ bool QModel::setData(const QModelIndex &index, const QVariant &value, int role){
     }
     emit dataChanged(index,index,{Qt::EditRole});
     return result;
+}
+
+bool QModel::save(QString path){
+    bool result = false;
+    if(path=="")
+        result = Model::save();
+    else {
+        result = Model::save(path.toStdString());
+        settings->setValue("last_file",path);
+        settings->sync();
+    }
+    return result;
+}
+
+bool QModel::load(QString path){
+    bool result = false;
+    if(path=="")
+        result = Model::load();
+    else {
+        result = Model::load(path.toStdString());
+        settings->setValue("last_file",path);
+        settings->sync();
+    }
+    return result;
+}
+
+QString QModel::getCurrenFile() const{
+    return settings->value("last_file").value<QString>();
+}
+
+QModel::~QModel(){
+    settings->sync();
+    delete settings;
 }

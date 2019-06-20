@@ -42,6 +42,15 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+RESOURCES += \
+    resources.qrc
+
+DISTFILES +=
+
+unix:!macx: LIBS += -L$$OUT_PWD/../QModel/ -lQModel
+
+INCLUDEPATH += $$PWD/../QModel
+DEPENDPATH += $$PWD/../QModel
 
 unix:!macx: LIBS += -L$$OUT_PWD/../Container/ -lContainer
 
@@ -56,27 +65,3 @@ INCLUDEPATH += $$PWD/../IoT
 DEPENDPATH += $$PWD/../IoT
 
 unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoT/libIoT.a
-
-unix:!macx: LIBS += -L$$OUT_PWD/../IoTBuilder/ -lIoTBuilder
-
-INCLUDEPATH += $$PWD/../IoTBuilder
-DEPENDPATH += $$PWD/../IoTBuilder
-
-unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoTBuilder/libIoTBuilder.a
-
-unix:!macx: LIBS += -L$$OUT_PWD/../Model/ -lModel
-
-INCLUDEPATH += $$PWD/../Model
-DEPENDPATH += $$PWD/../Model
-
-unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../Model/libModel.a
-
-unix:!macx: LIBS += -L$$OUT_PWD/../QModel/ -lQModel
-
-INCLUDEPATH += $$PWD/../QModel
-DEPENDPATH += $$PWD/../QModel
-
-RESOURCES += \
-    resources.qrc
-
-DISTFILES +=

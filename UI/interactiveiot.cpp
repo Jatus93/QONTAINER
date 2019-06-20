@@ -8,10 +8,10 @@ InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *paren
     room = setQLabel("Room");
     serial = setQLabel("Serial");
     lClass = setQLabel("Type");
-    e_name= new QLineEdit(this);
-    e_room= new QComboBox(this);
-    e_serial= new QLineEdit(this);
     classChoose = new QComboBox(this);
+    e_room= new QComboBox(this);
+    e_name= new QLineEdit(this);
+    e_serial= new QLineEdit(this);
     wlayout = new QFormLayout(this);
     std::list<std::string> dlist = IoTBuilder::getKeys();
     if(eDevice != ""){

@@ -20,7 +20,7 @@ private:
     QModel* data;
     void fillTabs();
     QSortFilterProxyModel *proxyModel;
-    QList<QTableView*> tabIndex;
+    QMap<QString,QTableView*> tabIndex;
     void redrawAll();
 private slots:
     void doubleClickedRow(const QModelIndex& index);

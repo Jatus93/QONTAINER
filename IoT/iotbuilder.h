@@ -1,7 +1,7 @@
 #ifndef IOTBUILDER_H
 #define IOTBUILDER_H
 
-#include "../IoT/iot.h"
+#include "./iot.h"
 #include <QMap>
 
 class IoTBuilder

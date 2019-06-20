@@ -4,8 +4,9 @@
 #include <../Container/container.h>
 #include <iostream>
 #include <fstream>
-#include "../IoTBuilder/iotbuilder.h"
-#include "../IoTBuilder/iotdevices.h"
+#include <QResource>
+#include "../IoT/iotbuilder.h"
+#include "../IoT/iotdevices.h"
 
 class Model
 {
@@ -15,19 +16,19 @@ protected:
         IoTContainer();
         void loadFromJson(const std::string& dev);
         std::string serialize() const;
-        Iterator<IoT*> searchName(std::string name) const;
-        Iterator<IoT*> searchSerial(std::string serial) const;
+        Iterator searchName(std::string name) const;
+        Iterator searchSerial(std::string serial) const;
         std::string getDevicesForAttribute(std::string attribute) const;
     };
     IoTContainer iotdev;
     static Container<std::string> rooms;
     static Container<std::string> devices;
-    static std::string default_path;
+    static std::string current_file_path;
     void fillDeviceContainer();
 public:
-    Model(const std::string& file_path=default_path);
-    bool load(const std::string& file_path=default_path) ;
-    bool save(const std::string& file_path=default_path) const;
+    Model(const std::string& file_path=current_file_path);
+    bool load(const std::string& file_path=current_file_path) ;
+    bool save(const std::string& file_path=current_file_path) const;
     bool addDevice(const std::string& json_device);
     bool removeDevice(const std::string& json_device);
     bool setDeviceStatus(const std::string& status);

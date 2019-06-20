@@ -1,25 +1,23 @@
 QT       -= gui
 TARGET = QModel
 TEMPLATE = lib
+CONFIG += staticlib
 HEADERS += \
-    qmodel.h
+    qmodel.h \
+    model.h
 
 SOURCES += \
-    qmodel.cpp
+    qmodel.cpp \
+    model.cpp
 
-unix:!macx: LIBS += -L$$OUT_PWD/../Model/ -lModel
 
-INCLUDEPATH += $$PWD/../Model
-DEPENDPATH += $$PWD/../Model
 
-unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../Model/libModel.a
+unix:!macx: LIBS += -L$$OUT_PWD/../Container/ -lContainer
 
-unix:!macx: LIBS += -L$$OUT_PWD/../IoTBuilder/ -lIoTBuilder
+INCLUDEPATH += $$PWD/../Container
+DEPENDPATH += $$PWD/../Container
 
-INCLUDEPATH += $$PWD/../IoTBuilder
-DEPENDPATH += $$PWD/../IoTBuilder
-
-unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../IoTBuilder/libIoTBuilder.a
+unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../Container/libContainer.a
 
 unix:!macx: LIBS += -L$$OUT_PWD/../IoT/ -lIoT
 

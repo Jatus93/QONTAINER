@@ -3,12 +3,14 @@
 
 #include <QAbstractTableModel>
 #include <QDebug>
-#include "../Model/model.h"
+#include <QSettings>
+#include <QFileInfo>
+#include "model.h"
 class QModel : public QAbstractTableModel, public Model
 {
     Q_OBJECT
 private:
-    QJsonObject currentStatus;
+    QSettings *settings;
 public:
     QModel(QObject* parent=nullptr);
     QModel(std::string file_path,QObject* parent=nullptr);
@@ -19,6 +21,10 @@ public:
     bool insertRows(int position, int rows, const QModelIndex &index) override;
     bool removeRows(int position, int rows, const QModelIndex &index) override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    bool save(QString path="");
+    bool load(QString path="");
+    QString getCurrenFile() const;
+    ~QModel() override;
 };
 
 #endif // QMODEL_H

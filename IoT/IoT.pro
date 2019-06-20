@@ -24,10 +24,15 @@ SOURCES += \
         iot.cpp \
     switch/switch.cpp \
     shutter/shutter.cpp \
-    light/dimmerablelight.cpp
+    light/dimmerablelight.cpp \
+    iotbuilder.cpp
+	
 
 HEADERS += \
         iot.h \
     switch/switch.h \
     shutter/shutter.h \
-    light/dimmerablelight.h
+    light/dimmerablelight.h\
+    iotbuilder.h \
+    iotfactorydevice.h \
+    iotdevices.h

@@ -24,9 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES +=
 
 HEADERS += \
-        container.h \
-    iterator.h \
-    node.h
+        container.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

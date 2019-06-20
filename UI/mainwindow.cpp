@@ -8,6 +8,14 @@ MainWindow::MainWindow()
     setCentralWidget(widget);
     QModel* data= new QModel(this);
     mainContent = new MainContent(data,this);
+    if(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull()){
+        QMessageBox::information(nullptr,tr("Welcome"),tr("Seems to be the first time this program has been launch, please choose where to save your devices"));
+        while(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull()){
+            saveAs();
+            if(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull())
+                QMessageBox::warning(nullptr,tr("Alert"),tr("The choosen file seems not valid, please try again"));
+        }
+    }
     QGridLayout *layout = new QGridLayout;
     infoLabel = new QLabel(this);
     infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT device online"));
@@ -30,6 +38,7 @@ MainWindow::MainWindow()
     setMinimumSize(640, 480);
     resize(640, 480);
 }
+
 
 #ifndef QT_NO_CONTEXTMENU
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)

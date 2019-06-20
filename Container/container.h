@@ -3,45 +3,154 @@
 #include <iostream>
 #include <signal.h>
 #include <typeinfo>
-template<class T> class Iterator;
-template<class T> class Node;
 template<class T> class Container{
 private:
-    friend class Iterator<T>;
+    friend class Iterator;
+    class Node{
+    public:
+        friend class Iterator;
+        const bool first;
+        T data;
+        Node* previous;
+        Node* next;
+        /**
+     * @brief Node
+     * @param fData
+     * @param fPrevious
+     * @param fNext
+     */
+        Node(const T& fData,Node* fPrevious=nullptr,Node* fNext=nullptr):first(false){
+            data = fData;
+            previous = fPrevious;
+            next = fNext;
+        }
+
+        /**
+     * @brief Node
+     * @param c
+     */
+        Node(const Node& c):first(c.first){
+            data = c.data;
+            this->previous = c.previous;
+            this->next = c.next;
+        }
+        Node():first(true){
+            previous = this;
+            next = this;
+        }
+        ~Node(){
+            if(!this->first){
+                previous=this;
+                next = this;
+            }
+        }
+    };
     /**
      * @brief getElement
      * @param i
      * @return
      */
-    Node<T>* getElement(const int& i) const;
+    Node* getElement(const int& i) const;
     /**
      * @brief getElementFromTop
      * @param i
      * @return
      */
-    Node<T>* getElementFromEnd(const int& i) const;
+    Node* getElementFromEnd(const int& i) const;
     /**
      * @brief getElementFromBottom
      * @param i
      * @return
      */
-    Node<T>* getElementFromStart(const int& i) const;
+    Node* getElementFromStart(const int& i) const;
     /**
      * @brief insert
      * @param node
      * @param value
      */
-    void insert(Node<T>* node, const T& value);
+    void insert(Node* node, const T& value);
 
     /**
      * @brief deleteNode
      * @param toDelete
      */
-    void deleteNode(Node<T>* toDelete);
+    void deleteNode(Node* toDelete);
 
-    const Node<T>* handle;
+    const Node* handle;
     int cSize;
 public:
+    class Iterator{
+    private:
+        friend class Container<T>;
+        mutable Node* current;
+        const Container<T>* container;
+        /**
+         * @brief Iterator
+         * @param eContainer
+         * @param startNode
+         */
+        Iterator(const Container<T>* eContainer, Node* startNode = nullptr);
+
+        void invalidIterator() const;
+    public:
+        /**
+         * @brief Iterator
+         */
+
+        Iterator();
+
+        /**
+         * @brief Iterator
+         * @param e
+         */
+        Iterator(const Iterator& e);
+        Iterator(const Iterator* e);
+
+
+        /**
+         * @brief operator --
+         */
+        void operator--(int) const;
+        /**
+         * @brief operator ++
+         */
+        void operator++(int) const;
+
+        /**
+         * @brief operator *
+         * @return
+         */
+        const T& operator*() const;
+        /**
+         * @brief getData
+         * @return
+         */
+        const T& getData() const;
+
+        /**
+         * @brief operator =
+         * @param data
+         */
+        void operator=(const T* data);
+        /**
+         * @brief operator ==
+         * @param it
+         * @return
+         */
+        bool operator==(const Iterator& it) const;
+        /**
+         * @brief operator ==
+         * @param v
+         * @return
+         */
+        bool operator==(const T* v) const;
+        /**
+         * @brief operator !=
+         * @param v
+         * @return
+         */
+        bool operator!=(const T* v) const;
+    };
     /**
      * @brief Container
      */
@@ -80,7 +189,7 @@ public:
      * @param value
      * @return
      */
-    const Iterator<T>& search(const T& value) const;
+    const Iterator& search(const T& value) const;
 
     /**
      * @brief insert
@@ -93,7 +202,7 @@ public:
      * @brief insertAfterIterator
      * @param it
      */
-    void insertAfterIterator(const Iterator<T>& it, const T& value);
+    void insertAfterIterator(const Iterator& it, const T& value);
 
     /**
      * @brief operator []
@@ -111,32 +220,32 @@ public:
      * @brief deleteElementAt
      * @param it
      */
-    void deleteElementAt(const Iterator<T>& it);
+    void deleteElementAt(const Iterator& it);
     /**
      * @brief getIterator
      * @return
      */
-    Iterator<T>* getIterator();
+    Iterator* getIterator();
     /**
      * @brief getConstInterator
      * @return const Iterator
      */
 
-    const Iterator<T>* getConstIterator() const;
+    const Iterator* getConstIterator() const;
 
     /**
      * @brief getConstInteratorAt
      * @param index
      * @return const Iterator
      */
-    const Iterator<T>* getConstIteratorAt(int index =0) const;
+    const Iterator* getConstIteratorAt(int index =0) const;
 
     /**
      * @brief getIteratorAt
      * @param index
      * @return
      */
-    Iterator<T>* getIteratorAt(int index = 0);
+    Iterator* getIteratorAt(int index = 0);
     /**
      * @brief size
      * @return
@@ -145,9 +254,12 @@ public:
 
     ~Container();
 };
-
+/***
+ * CONTAINER DEFINITION *
+ * */
 // PUBLIC METHODS
-template <class T> Container<T>::Container():handle(new Node<T>()){
+
+template <class T> Container<T>::Container():handle(new Container<T>::Node()){
     cSize = 0;
 }
 
@@ -161,7 +273,7 @@ template <class T> Container<T>::Container(const Container<T>* c):handle(c->hand
 
 template <class T> Container<T>* Container<T>::clone() const{
     Container<T>* temp = new Container<T>();
-    Iterator<T> it = getConstIterator();
+    Iterator it = getConstIterator();
     while(it!=nullptr){
         temp->pushBack(*(new T(*it)));
         it++;
@@ -177,19 +289,19 @@ template <class T> void Container<T>::pushBack(const T& value){
     insert(cSize,value);
 }
 
-template <class T> const Iterator<T>& Container<T>::search(const T& value) const{
-    const Iterator<T> it(getConstIterator());
+template <class T> const typename Container<T>::Iterator& Container<T>::search(const T& value) const{
+    const Iterator it(getConstIterator());
     while(it!=nullptr && it.getData()!=value)
         it++;
-    return *(new Iterator<T>(it));
+    return *(new Iterator(it));
 }
 
 template <class T> void Container<T>::insert(const int i, const T& value){
-    Node<T>* element = getElement(i)->previous;
+    Node* element = getElement(i)->previous;
     insert(element,value);
 }
 
-template <class T> void Container<T>::insertAfterIterator(const Iterator<T>& it, const T& value){
+template <class T> void Container<T>::insertAfterIterator(const Iterator& it, const T& value){
     insert(it.current,value);
 }
 
@@ -205,32 +317,32 @@ template <class T> void Container<T>::deleteElementAt(int i){
     deleteNode(getElement(i));
 }
 
-template <class T> void Container<T>::deleteElementAt(const Iterator<T>& it){
+template <class T> void Container<T>::deleteElementAt(const Iterator& it){
     if(it==nullptr)
         throw std::logic_error("Iterator past end");
-    Node<T>* n = it.current;
+    Node* n = it.current;
     it++;
     deleteNode(n);
 }
 
-template <class T> Iterator<T>* Container<T>::getIterator(){
+template <class T> typename Container<T>::Iterator* Container<T>::getIterator(){
     return getIteratorAt();
 }
 
-template <class T> const Iterator<T>* Container<T>::getConstIterator() const{
+template <class T> const typename Container<T>::Iterator* Container<T>::getConstIterator() const{
     return getConstIteratorAt();
 }
 
-template <class T> const Iterator<T>* Container<T>::getConstIteratorAt(int index) const{
+template <class T> const typename Container<T>::Iterator* Container<T>::getConstIteratorAt(int index) const{
     if(cSize == 0 || index < 0 || index >= cSize)
-        return new Iterator<T>(this);
-    return new Iterator<T>(this,getElement(index));
+        return new Iterator(this);
+    return new Iterator(this,getElement(index));
 }
 
-template <class T> Iterator<T>* Container<T>::getIteratorAt(int index){
+template <class T> typename Container<T>::Iterator* Container<T>::getIteratorAt(int index){
     if(cSize == 0 || index < 0 || index >= cSize)
-        return new Iterator<T>(this);
-    return new Iterator<T>(this,getElement(index));
+        return new Iterator(this);
+    return new Iterator(this,getElement(index));
 }
 
 template<class T> int Container<T>::size() const noexcept{
@@ -245,15 +357,15 @@ template <class T> Container<T>::~Container(){
 
 //PRIVATE METHODS
 
-template <class T> Node<T>* Container<T>::getElement(const int& i) const{
+template <class T> typename Container<T>::Node* Container<T>::getElement(const int& i) const{
     if(i>((cSize/2)))
         return getElementFromEnd(i);
     return getElementFromStart(i);
 }
 
-template <class T> Node<T>* Container<T>::getElementFromEnd(const int& i) const{
+template <class T> typename Container<T>::Node* Container<T>::getElementFromEnd(const int& i) const{
     int index = cSize-1;
-    Node<T>* pointer = handle->previous->next;
+    Node* pointer = handle->previous->next;
     while(index>=i){
         index--;
         pointer = pointer->previous;
@@ -261,9 +373,9 @@ template <class T> Node<T>* Container<T>::getElementFromEnd(const int& i) const{
     return pointer;
 }
 
-template <class T> Node<T>* Container<T>::getElementFromStart(const int& i) const{
+template <class T> typename Container<T>::Node* Container<T>::getElementFromStart(const int& i) const{
     int index = 0;
-    Node<T>* pointer = handle->next;
+    Node* pointer = handle->next;
     while (index<i) {
         index++;
         pointer = pointer->next;
@@ -271,8 +383,8 @@ template <class T> Node<T>* Container<T>::getElementFromStart(const int& i) cons
     return pointer;
 }
 
-template <class T> void Container<T>::insert(Node<T>* node, const T& value){
-    Node<T>* newNode = new Node<T>(value,node,node->next);
+template <class T> void Container<T>::insert(Node* node, const T& value){
+    Node* newNode = new Node(value,node,node->next);
     if (newNode == nullptr)
         throw std::bad_alloc();
     node->next->previous = newNode;
@@ -280,12 +392,132 @@ template <class T> void Container<T>::insert(Node<T>* node, const T& value){
     cSize++;
 }
 
-template <class T> void Container<T>::deleteNode(Node<T>* toDelete){
+template <class T> void Container<T>::deleteNode(Node* toDelete){
     toDelete->previous->next = toDelete->next;
     toDelete->next->previous = toDelete->previous;
     delete toDelete;
     cSize--;
 }
 
+/***
+ * ---ITERATOR DEFINITION---
+**/
+
+//PRIVATE METHODS
+
+template <class T> Container<T>::Iterator::Iterator(const Container<T>* eContainer, Node* startNode):container(eContainer){
+    if(!startNode && container->size()!=0)
+        current = container->handle->next;
+    else
+        current = startNode;
+}
+
+template <class T> void Container<T>::Iterator::invalidIterator() const{
+    if(!container)
+        throw std::domain_error("Iterator not valid");
+}
+
+/**
+ * @brief Iterator
+ */
+//PUBLIC METHODS
+template <class T> Container<T>::Iterator::Iterator():container(nullptr),current(nullptr){}
+
+/**
+ * @brief Iterator
+ * @param e
+ */
+template <class T> Container<T>::Iterator::Iterator(const Iterator& e):container(e.container){ current = e.current;}
+template <class T> Container<T>::Iterator::Iterator(const Iterator* e):container(e->container){ current = e->current;}
+
+
+/**
+ * @brief operator --
+ */
+template <class T> void Container<T>::Iterator::operator--(int) const{
+    invalidIterator();
+    if(current){
+        if(!current->previous->first)
+            current = current->previous;
+        else
+            current = nullptr;
+    }else {
+        current = container->handle->previous;
+    }
+}
+/**
+ * @brief operator ++
+ */
+template <class T> void Container<T>::Iterator::operator++(int) const{
+    invalidIterator();
+    if(current){
+        if(!current->next->first)
+            current = current->next;
+        else
+            current = nullptr;
+    }else{
+        current = container->handle->next;
+    }
+}
+
+/**
+ * @brief operator *
+ * @return
+ */
+template <class T> const T& Container<T>::Iterator::operator*() const{
+    invalidIterator();
+    return (current->data);
+}
+/**
+ * @brief getData
+ * @return
+ */
+template <class T> const T& Container<T>::Iterator::getData() const{
+    invalidIterator();
+    return (current->data);
+}
+
+/**
+ * @brief operator =
+ * @param data
+ */
+template <class T> void Container<T>::Iterator::operator=(const T* data){
+    invalidIterator();
+    if(current){
+        Node* temp = new Node(*data,current->previous,current->next);
+        current->previous->next = temp;
+        current->next->previous = temp;
+        delete current;
+        current = temp;
+    }
+}
+/**
+ * @brief operator ==
+ * @param it
+ * @return
+ */
+template <class T> bool Container<T>::Iterator::operator==(const Iterator& it) const{
+    invalidIterator();
+    return ((container==it.container) && (current == it.current));
+}
+/**
+ * @brief operator ==
+ * @param v
+ * @return
+ */
+template <class T> bool Container<T>::Iterator:: operator==(const T* v) const{
+    invalidIterator();
+    if((current == nullptr) && (v == nullptr))
+        return true;
+    return (&current->data == v);
+}
+/**
+ * @brief operator !=
+ * @param v
+ * @return
+ */
+template <class T> bool  Container<T>::Iterator::operator!=(const T* v) const{
+    return !(*this == v);
+}
+
 #endif // CONTAINER_H
-#include "iterator.h"
