@@ -21,19 +21,23 @@ MainWindow::MainWindow()
     infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));
     QPushButton* addIot = new QPushButton(tr("aggiungi disposito"),this);
     addIot->setMaximumWidth(150);
+    QPushButton* searchIot = new QPushButton(tr("cerca disposito"),this);
+    searchIot->setMaximumWidth(150);
     layout->addWidget(infoLabel,0,0,1,1);
     layout->addWidget(addIot,0,1,1,1);
-    layout->addWidget(mainContent,1,0,1,0);
+    layout->addWidget(searchIot,0,2,1,1);
+    layout->addWidget(mainContent,1,0,2,0);
     widget->setLayout(layout);
 
     createActions();
     createMenus();
+    connect(searchIot,SIGNAL(clicked(bool)),mainContent,SLOT(showResearchDialog()));
     connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
     connect(mainContent,&MainContent::update,this,[this](){infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));});
 
     setWindowTitle(tr("QContainer"));
     setMinimumSize(640, 480);
-    resize(640, 480);
+    resize(840, 780);
 }
 
 

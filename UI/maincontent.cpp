@@ -48,7 +48,7 @@ void MainContent::fillTabs(){
             tabIndex.insert(strRoom,tableView);
             addTab(tableView,strRoom);
             connect(tableView,SIGNAL(doubleClicked(const QModelIndex&)),this,SLOT(editSelectedRow()));
-            tableView->setItemDelegate(new CustomDelegate());
+            tableView->setItemDelegate(new CustomDelegate(this));
         }
     }
     foreach(auto room, tabIndex.keys()){
@@ -84,8 +84,11 @@ void MainContent::save(QString filepath){
 }
 
 void MainContent::showEditOrAddEntryDialog(QString device){
+    QWidget * parent = this;
+    if(researchView)
+        parent = researchView;
     if(addOrEdit == nullptr){
-        addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,this);
+        addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,parent);
         if(device != ""){
             addOrEdit->setWindowTitle(tr("Modifica il dispositivo"));
             connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(editEntry(QString)));
@@ -125,6 +128,8 @@ void MainContent::editEntry(QString device){
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
+    if(selectionModel->selectedRows().empty())
+        selectionModel = researchView->findChild<QTableView *>()->selectionModel();
     QModelIndex index = selectionModel->selectedRows().first();
     proxy->setData(index,device,Qt::EditRole);
     addOrEdit->close();
@@ -132,8 +137,12 @@ void MainContent::editEntry(QString device){
     fillTabs();
     emit update();
 }
-void MainContent::editSelectedRow(){
-    QTableView *temp = static_cast<QTableView*>(currentWidget());
+void MainContent::editSelectedRow(QTableView* table){
+    QTableView *temp;
+    if(table == nullptr)
+        temp = static_cast<QTableView*>(currentWidget());
+    else
+        temp = table;
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
@@ -160,6 +169,12 @@ void MainContent::removeEntry(){
     }
     emit update();
 
+}
+
+void MainContent::showResearchDialog(){
+    researchView = new ResearchView(data,this);
+    researchView->show();
+    connect(researchView,SIGNAL(doubleClicked(QTableView*)),this,SLOT(editSelectedRow(QTableView*)));
 }
 
 int MainContent::size(){

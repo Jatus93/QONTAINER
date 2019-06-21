@@ -29,13 +29,15 @@ SOURCES += \
         interactiveiot.cpp \
         main.cpp \
         maincontent.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        researchview.cpp
 
 HEADERS += \
         customdelegate.h \
         interactiveiot.h \
         maincontent.h \
-        mainwindow.h
+        mainwindow.h \
+        researchview.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

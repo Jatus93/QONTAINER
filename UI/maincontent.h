@@ -7,16 +7,17 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QWindow>
-#include <QDebug>
 #include "../QModel/qmodel.h"
-#include "interactiveiot.h"
-#include "customdelegate.h"
+#include <interactiveiot.h>
+#include <customdelegate.h>
+#include <researchview.h>
 
 class MainContent : public QTabWidget
 {
     Q_OBJECT
 private:
     InteractiveIot * addOrEdit;
+    ResearchView * researchView;
     QModel* data;
     void fillTabs();
     QSortFilterProxyModel *proxyModel;
@@ -84,7 +85,12 @@ public slots:
      * call the showEditOrAddEntryDialog with the selected row
      * @brief editSelectedRow
      */
-    void editSelectedRow();
+    void editSelectedRow(QTableView* table = nullptr);
+    /**
+     * shows the ResearchDialog
+     * @brief showResearchDialog
+     */
+    void showResearchDialog();
 
 signals:
     void selectionChanged (const QItemSelection &selected);
