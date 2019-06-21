@@ -9,17 +9,17 @@ MainWindow::MainWindow()
     QModel* data= new QModel(this);
     mainContent = new MainContent(data,this);
     if(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull()){
-        QMessageBox::information(nullptr,tr("Welcome"),tr("Seems to be the first time this program has been launch, please choose where to save your devices"));
+        QMessageBox::information(nullptr,tr("Benvenuto"),tr("Sembra essere il primo avvio del programma, per favore selezione un file da usare per salvare il contenuto"));
         while(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull()){
             saveAs();
             if(data->getCurrenFile() == "" || data->getCurrenFile().isEmpty() || data->getCurrenFile().isNull())
-                QMessageBox::warning(nullptr,tr("Alert"),tr("The choosen file seems not valid, please try again"));
+                QMessageBox::warning(nullptr,tr("Attenzione"),tr("Il file scelto non sembra essere valido, per favore riprova"));
         }
     }
     QGridLayout *layout = new QGridLayout;
     infoLabel = new QLabel(this);
-    infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT device online"));
-    QPushButton* addIot = new QPushButton(tr("add device"),this);
+    infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));
+    QPushButton* addIot = new QPushButton(tr("aggiungi disposito"),this);
     addIot->setMaximumWidth(150);
     layout->addWidget(infoLabel,0,0,1,1);
     layout->addWidget(addIot,0,1,1,1);
@@ -29,7 +29,7 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
     connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
-    connect(mainContent,&MainContent::update,this,[this](){infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT device online"));});
+    connect(mainContent,&MainContent::update,this,[this](){infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));});
 
     setWindowTitle(tr("QContainer"));
     setMinimumSize(640, 480);
@@ -73,38 +73,38 @@ void MainWindow::saveAs()
 
 void MainWindow::createActions()
 {
-    openAct = new QAction(tr("&Open..."), this);
+    openAct = new QAction(tr("&Apri..."), this);
     openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing file"));
+    openAct->setStatusTip(tr("Apre un file esistente"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
 
-    saveAct = new QAction(tr("&Save"), this);
+    saveAct = new QAction(tr("&Salva"), this);
     saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the document to disk"));
+    saveAct->setStatusTip(tr("Salva nel file corrente"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
 
-    saveAsAct = new QAction(tr("&Save as..."), this);
+    saveAsAct = new QAction(tr("&Salva con nome"), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
-    saveAsAct->setStatusTip(tr("Save the document to disk"));
+    saveAsAct->setStatusTip(tr("Salva in un nuovo file"));
     connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
 
-    exitAct = new QAction(tr("E&xit"), this);
+    exitAct = new QAction(tr("Chiudi"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
+    exitAct->setStatusTip(tr("Chiude l'applicazione, senza salvare"));
     connect(exitAct, &QAction::triggered, this, &QWidget::close);
 
-    removeAct = new QAction(tr("&Delete"));
+    removeAct = new QAction(tr("&Rimuovi"));
     removeAct->setShortcut(QKeySequence::Delete);
-    removeAct->setStatusTip(tr("Remove selected contents"));
+    removeAct->setStatusTip(tr("Rimuov l'elmento selezionato"));
     connect(removeAct, SIGNAL(triggered()),mainContent,SLOT(removeEntry()));
 
-    editAct = new QAction(tr("&Edit"));
+    editAct = new QAction(tr("&Modifica"));
     editAct->setShortcut(QKeySequence::Replace);
-    editAct->setStatusTip(tr("Edit selected contents"));
+    editAct->setStatusTip(tr("Modifica l'elemento selezionato"));
     connect(editAct, SIGNAL(triggered()),mainContent,SLOT(editSelectedRow()));
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+    aboutQtAct->setStatusTip(tr("Mostra la versione di QT usata"));
     connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
 }
 

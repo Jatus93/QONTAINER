@@ -4,10 +4,10 @@ InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *paren
 {
     statusButtons = nullptr;
     statusSliders = nullptr;
-    name = setQLabel("Name");
-    room = setQLabel("Room");
-    serial = setQLabel("Serial");
-    lClass = setQLabel("Type");
+    name = setQLabel("Nome del dispitivo");
+    room = setQLabel("Stanza");
+    serial = setQLabel("Seriale");
+    lClass = setQLabel("Tipo");
     classChoose = new QComboBox(this);
     e_room= new QComboBox(this);
     e_name= new QLineEdit(this);
@@ -17,7 +17,7 @@ InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *paren
     if(eDevice != ""){
         device = IoTBuilder::getDevice(QJsonDocument::fromJson(eDevice.toUtf8()));
     }else{
-        device = IoTBuilder::getDevice(QJsonDocument::fromJson("{\"class\":\"dimmerableLight\",\"name\": \"Change me\", \"room\": \"Change me\", \"serial\": \"Change me\"}"));
+        device = IoTBuilder::getDevice(QJsonDocument::fromJson("{\"class\":\"dimmerableLight\",\"name\": \"Cambiami\", \"room\": \"Cambiami\", \"serial\": \"Cambiami\"}"));
     }
     devcurrent = device->JsonSerialize().object();
     dserial = QString::fromStdString(device->getSerial());
@@ -30,7 +30,7 @@ InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *paren
     }
     QJsonDocument jrooms = QJsonDocument::fromJson(JsonRooms.toUtf8());
     QJsonArray rooms(jrooms.object()["rooms"].toArray());
-    e_room->addItem(tr("Change me"));
+    e_room->addItem(tr("Cambiami"));
     foreach(auto room, rooms){
         e_room->addItem(room.toString());
         if(device->getRoom() == room.toString().toStdString()){
@@ -44,7 +44,7 @@ InteractiveIot::InteractiveIot(QString JsonRooms,QString eDevice, QWidget *paren
     }
     connect(classChoose,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(setClass(const QString&)));
     connect(e_room,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(setRoom(const QString&)));
-    done = new QPushButton(tr("Done"));
+    done = new QPushButton(tr("Fatto"));
     connect(done,SIGNAL(clicked(bool)),this,SLOT(setDone()));
     setStatusEditor();
     wlayout->addItem(createGroup(lClass,classChoose));
@@ -196,19 +196,19 @@ void InteractiveIot::clearLayout(QLayout* to_clean){
 }
 void InteractiveIot::setDone(){
     QString jdevice(QJsonDocument(devcurrent).toJson());
-    if(devcurrent["name"].toString().toStdString() == "Change me"){
+    if(devcurrent["name"].toString().toStdString() == "Cambiami"){
         QMessageBox messageBox;
-        messageBox.critical(nullptr,"Error","Name is not valid");
+        messageBox.critical(nullptr,"Errore","il nome non è valido");
         messageBox.setFixedSize(500,200);
     }
-    else if(devcurrent["room"].toString().toStdString() == "Change me"){
+    else if(devcurrent["room"].toString().toStdString() == "Cambiami"){
         QMessageBox messageBox;
-        messageBox.critical(nullptr,"Error","Room is not valid");
+        messageBox.critical(nullptr,"Errore","La stanza non è valida");
         messageBox.setFixedSize(500,200);
     }
-    else if(devcurrent["serial"].toString().toStdString() == "Change me"){
+    else if(devcurrent["serial"].toString().toStdString() == "Cambiami"){
         QMessageBox messageBox;
-        messageBox.critical(nullptr,"Error","Serial is not valid");
+        messageBox.critical(nullptr,"Errore","Seriale non valido");
         messageBox.setFixedSize(500,200);
     }else {
         emit newDevice(jdevice);

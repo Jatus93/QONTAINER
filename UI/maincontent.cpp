@@ -64,7 +64,7 @@ void MainContent::fillTabs(){
 
 void MainContent::load(QString filepath){
     if(data->load(filepath)){
-        QMessageBox::information(this,tr("Success"),tr("file was loaded correctly"));
+        QMessageBox::information(this,tr("Successo"),tr("il file è stato caricato correttamente"));
         fillTabs();
         emit update();
     }
@@ -79,7 +79,7 @@ void MainContent::save(QString filepath){
             result = data->load(filepath);
     }
     if(result){
-        QMessageBox::information(this,tr("Success"),tr("file was saved correctly"));
+        QMessageBox::information(this,tr("Successo"),tr("il file è stato salvato correttamente"));
     }
 }
 
@@ -87,10 +87,10 @@ void MainContent::showEditOrAddEntryDialog(QString device){
     if(addOrEdit == nullptr){
         addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,this);
         if(device != ""){
-            addOrEdit->setWindowTitle(tr("Add a new Device"));
+            addOrEdit->setWindowTitle(tr("Modifica il dispositivo"));
             connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(editEntry(QString)));
         }else {
-            addOrEdit->setWindowTitle(tr("Add a new Device"));
+            addOrEdit->setWindowTitle(tr("Aggiungi dispotivo"));
             connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(addEntry(QString)));
         }
         this->stackUnder(addOrEdit);
@@ -98,7 +98,7 @@ void MainContent::showEditOrAddEntryDialog(QString device){
         addOrEdit->show();
     }else {
         QMessageBox messageBox;
-        messageBox.critical(nullptr,"Error","All the operation must be completed before proceeding.");
+        messageBox.critical(nullptr,"Errore","Tutte le operazioni devono essere completate prima di poter procedere.");
         messageBox.setFixedSize(500,200);
     }
 }
@@ -117,7 +117,7 @@ void MainContent::addEntry(QString device){
         fillTabs();
         emit update();
     } else {
-        QMessageBox::information(this,tr("Device alredy registred"),tr("This serial has been used already"));
+        QMessageBox::information(this,tr("Il dispositivo è già stato registrato"),tr("Questo seriale è già in uso"));
     }
 }
 void MainContent::editEntry(QString device){
