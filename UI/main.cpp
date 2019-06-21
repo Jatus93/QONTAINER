@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QApplication::setApplicationName("Qontainer");
+    QApplication::setApplicationName("IoT Manager");
     QFile file(":/style/mainStyle.qss");
     file.open(QFile::ReadOnly);
     QString style = QLatin1String(file.readAll());

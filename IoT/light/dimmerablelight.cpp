@@ -1,6 +1,6 @@
 #include "dimmerablelight.h"
 const std::string DimmerableLight::lClass = "dimmerableLight";
-const QJsonDocument DimmerableLight::states= QJsonDocument::fromJson("{\"power\": {	\"min\":"+ QString::number(off).toUtf8() +" ,\"max\": "+ QString::number(on).toUtf8() +"},\"brightness\": {	\"min\":"+ QString::number(minBrightness).toUtf8() +" ,\"max\": "+ QString::number(maxBrightness).toUtf8() +"}}");
+const QJsonDocument DimmerableLight::states= QJsonDocument::fromJson("{\"power\":{\"min\":"+QString::number(off).toUtf8()+",\"max\":"+ QString::number(on).toUtf8()+"},\"brightness\":{\"min\":"+ QString::number(minBrightness).toUtf8()+",\"max\":"+QString::number(maxBrightness).toUtf8()+"}}");
 
 DimmerableLight::DimmerableLight(const std::string& fSerial, const std::string& fRoom, const std::string& fName):IoT(fSerial,lClass,fRoom,fName)
 {
@@ -22,32 +22,22 @@ const QJsonDocument& DimmerableLight::getDeviceInstruction() const{
 
 void DimmerableLight::setDevice(const QJsonDocument& instruction) {
     QJsonObject data(instruction.object());
-    QJsonObject local(states.object());
     if(!data.isEmpty()){
-        QStringList eKeys = data.keys();
-        QStringList iKeys = local.keys();
-        QString key;
-        foreach (key, eKeys) {
-            if(iKeys.contains(key)){
-                //status[key] = instruction.object()[key];
-                if(data[key].toInt()>=local[key].toObject()["min"].toInt() && data[key].toInt()<=local[key].toObject()["max"].toInt())
-                    status[key] = instruction.object()[key];
-                else {
-                    throw std::invalid_argument(key.toStdString()+" field value is not valid");
-                }
-            }
-
-        }
+        //power control
+        if(data["power"].toInt() == off || data["power"].toInt() == on)
+            status["power"] = data["power"];
+        else
+            throw std::invalid_argument("power value is invalid");
+        //brightness control
+        if(data["brightness"].toInt()>=minBrightness && data["brightness"].toInt()<=maxBrightness )
+            status["brightness"] = data["brightness"];
+        else
+            throw std::invalid_argument("brightness value is invalid");
     }
-    if(status["brightness"].toInt()<=0)
+    if(status["brightness"].toInt()==0)
         status["power"] = 0;
 }
 
 IoT* DimmerableLight::clone() const{
     return new DimmerableLight(JsonSerialize());
-}
-
-
-const std::string DimmerableLight::getClass(){
-    return lClass;
 }

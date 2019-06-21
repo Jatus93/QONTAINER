@@ -1,6 +1,4 @@
 #include "shutter.h"
-#include <QTextStream>
-#include <QDir>
 
 std::string Shutter::lClass = "shutter";
 QJsonDocument Shutter::states = QJsonDocument::fromJson("{\"height\":{\"min\":"+QString::number(min).toUtf8()+",\"max\":"+QString::number(max).toUtf8()+"}}");
@@ -37,8 +35,4 @@ void Shutter::setDevice(const QJsonDocument& instruction) {
 
 IoT* Shutter::clone() const{
     return new Shutter(JsonSerialize());
-}
-
-const std::string Shutter::getClass(){
-    return lClass;
 }

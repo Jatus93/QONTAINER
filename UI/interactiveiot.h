@@ -17,6 +17,16 @@ class InteractiveIot : public QDialog
 {
     Q_OBJECT
 public:
+    /**
+     * The only constructor, requires the room list in json format
+     * if the eDevice string is provied and is an valid IoT device
+     * the interface will be used for edit the current device
+     *
+     * @brief InteractiveIot
+     * @param JsonRooms
+     * @param eDevice
+     * @param parent
+     */
     InteractiveIot(QString JsonRooms ,QString eDevice="", QWidget *parent =nullptr);
     ~InteractiveIot();
 signals:

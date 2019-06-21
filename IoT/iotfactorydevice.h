@@ -1,7 +1,14 @@
+/**
+  * @file IoTFactoryDevice.h
+  * @class IoTFactoryDevice
+  * @extends IoTBuilder
+  * @brief IoTBuilder implementation as template
+  * @package IoT
+  * @author Gianmarco Pettinato
+  */
 #ifndef IOTFACTORYDEVICE_H
 #define IOTFACTORYDEVICE_H
 #include "iotbuilder.h"
-#include <typeinfo>
 
 template<class T> class IoTFactoryDevice : public IoTBuilder{
 protected:

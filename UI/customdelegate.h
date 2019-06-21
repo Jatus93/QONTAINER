@@ -12,6 +12,14 @@ class CustomDelegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     CustomDelegate(QWidget * parent=nullptr):QStyledItemDelegate(parent){}
+    /**
+     * replace the default paint method centering the content for all the column
+     * in the thrid column the Json get formatted
+     * @brief paint
+     * @param painter
+     * @param option
+     * @param index
+     */
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 

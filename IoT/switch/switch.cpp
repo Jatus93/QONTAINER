@@ -38,7 +38,3 @@ const QJsonDocument& Switch::getDeviceInstruction() const{
 IoT* Switch::clone() const{
     return new Switch(JsonSerialize());
 }
-
-const std::string Switch::getClass(){
-    return lClass;
-}

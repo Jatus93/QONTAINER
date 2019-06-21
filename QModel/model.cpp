@@ -1,12 +1,8 @@
 #include "model.h"
-std::string Model::current_file_path = "";
+std::string Model::currentFilePath = "";
 Container<std::string> Model::rooms;
 Container<std::string> Model::devices;
 
-/**
- * @brief Model::IoTContainer::IoTContainer
- * @param dev
- */
 void Model::IoTContainer::loadFromJson(const std::string& dev){
     QJsonDocument devices = QJsonDocument::fromJson(dev.c_str());
     if(devices.isNull())
@@ -16,20 +12,16 @@ void Model::IoTContainer::loadFromJson(const std::string& dev){
         foreach (const QString& key, json.keys()) {
             QJsonDocument* device = new QJsonDocument(json.value(key).toObject());
             std::string room = device->object().value("room").toString().toStdString();
-            IoT * rDevice = IoTBuilder::build(*device);
-            this->pushBack(rDevice);
+            IoT * rDevice = IoTBuilder::getDevice(*device);
+            if(rDevice != nullptr)
+                this->pushBack(rDevice);
             addRoom(room);
         }
     }
 }
-/**
- * @brief Model::IoTContainer::IoTContainer
- */
+
 Model::IoTContainer::IoTContainer():Container<IoT*>(){}
-/**
- * @brief Model::IoTContainer::serialize
- * @return
- */
+
 std::string Model::IoTContainer::serialize() const{
     std::string devices("{");
     const Iterator it = getConstIterator();
@@ -43,11 +35,6 @@ std::string Model::IoTContainer::serialize() const{
     devices = devices + "}";
     return devices;
 }
-/**
- * @brief Model::IoTContainer::searchName
- * @param name
- * @return
- */
 
 Container<IoT*>::Iterator Model::IoTContainer::searchName(std::string name) const{
     Container<IoT*>::Iterator it = this->getConstIterator();
@@ -59,11 +46,7 @@ Container<IoT*>::Iterator Model::IoTContainer::searchName(std::string name) cons
     }
     return it;
 }
-/**
- * @brief Model::IoTContainer::searchSerial
- * @param serial
- * @return
- */
+
 Container<IoT*>::Iterator Model::IoTContainer::searchSerial(std::string serial) const{
     Container<IoT*>::Iterator it = this->getConstIterator();
     bool exit = false;
@@ -75,11 +58,6 @@ Container<IoT*>::Iterator Model::IoTContainer::searchSerial(std::string serial) 
     return it;
 }
 
-/**
- * @brief Model::IoTContainer::getDevicesForAttribute
- * @param attribute
- * @return
- */
 std::string Model::IoTContainer::getDevicesForAttribute(std::string attribute) const{
     if(attribute == "")
         return serialize();
@@ -109,37 +87,28 @@ std::string Model::IoTContainer::getDevicesForAttribute(std::string attribute) c
 
     return toReturn;
 }
-/**
- * @brief Model::fillDeviceContainer
- */
+
 void Model::fillDeviceContainer(){
     std::list<std::string> keys = IoTBuilder::getKeys();
     foreach(std::string key,keys){
         devices.pushBack(key);
     }
 }
-/**
- * @brief Model::Model
- * @param file_path
- */
-Model::Model(const std::string& file_path){
-    if(file_path!=current_file_path)
-        current_file_path = file_path;
+
+Model::Model(const std::string& filePath){
+    if(filePath!=currentFilePath)
+        currentFilePath = filePath;
     load();
     if(devices.size() == 0){
         fillDeviceContainer();
     }
 }
-/**
- * @brief Model::load
- * @param file_path
- * @return
- */
-bool Model::load(const std::string &file_path){
+
+bool Model::load(const std::string &filePath){
     bool status = false;
-    if(file_path != ""){
-        if(file_path!=current_file_path)
-            current_file_path = file_path;
+    if(filePath != ""){
+        if(filePath!=currentFilePath)
+            currentFilePath = filePath;
         if(iotdev.size()>0)
         {
             Container<IoT*>::Iterator it = iotdev.getIterator();
@@ -153,7 +122,7 @@ bool Model::load(const std::string &file_path){
         while(rooms.size()>0){
             rooms.deleteElementAt(i);
         }
-        std::ifstream IoTfile(file_path);
+        std::ifstream IoTfile(filePath);
         if(IoTfile.is_open()){
             std::string devices;
             std::string line;
@@ -163,26 +132,22 @@ bool Model::load(const std::string &file_path){
             iotdev.loadFromJson(devices);
             status = true;
         }else {
-            std::ofstream IoTFileTmp(file_path);
+            std::ofstream IoTFileTmp(filePath);
             IoTFileTmp << "{}";
             IoTFileTmp.close();
-            load(file_path);
+            load(filePath);
         }
         IoTfile.close();
     }
     return status;
 }
-/**
- * @brief Model::save
- * @param file_path
- * @return
- */
-bool Model::save(const std::string &file_path) const{
+
+bool Model::save(const std::string &filePath) const{
     bool status = false;
-    if(file_path!=""){
-        if(file_path!=current_file_path)
-            current_file_path = file_path;
-        std::ofstream IoTfile(file_path);
+    if(filePath!=""){
+        if(filePath!=currentFilePath)
+            currentFilePath = filePath;
+        std::ofstream IoTfile(filePath);
         if(IoTfile.is_open()){
             IoTfile<<getSerializzation();
             status = true;
@@ -193,11 +158,6 @@ bool Model::save(const std::string &file_path) const{
     }
     return status;
 }
-/**
- * @brief Model::addDevice
- * @param json_device
- * @return
- */
 
 bool Model::addDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
@@ -215,24 +175,19 @@ bool Model::addDevice(const std::string &json_device){
     }
     return true;
 }
-/**
- * @brief Model::setDeviceStatus
- * @param status
- * @return
- */
 
 bool Model::setDeviceStatus(const std::string &status){
     bool ok = false;
-    QJsonDocument j_status = QJsonDocument::fromJson(status.c_str());
-    std::string serial = j_status.object()["serial"].toString().toStdString();
-    QJsonDocument command(j_status.object()["status"].toObject());
+    QJsonDocument jStatus = QJsonDocument::fromJson(status.c_str());
+    std::string serial = jStatus.object()["serial"].toString().toStdString();
+    QJsonDocument command(jStatus.object()["status"].toObject());
     const Container<IoT*>::Iterator it = iotdev.searchSerial(serial);
     const IoT* const_ptr = (*it);
     IoT* ptr = const_cast<IoT*>(const_ptr);
     try {
-        ptr->setName(j_status.object()["name"].toString().toStdString());
-        ptr->setRoom(j_status.object()["room"].toString().toStdString());
-        addRoom(j_status.object()["room"].toString().toStdString());
+        ptr->setName(jStatus.object()["name"].toString().toStdString());
+        ptr->setRoom(jStatus.object()["room"].toString().toStdString());
+        addRoom(jStatus.object()["room"].toString().toStdString());
         ptr->setDevice(command);
         std::string after = ptr->getStatus().toJson().toStdString();
         ok = command.toJson().toStdString() == after;
@@ -266,11 +221,7 @@ bool Model::setDeviceStatus(const std::string& status, int index){
 
     return  result;
 }
-/**
- * @brief Model::removeDevice
- * @param json_device
- * @return
- */
+
 bool Model::removeDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
     const Container<IoT*>::Iterator it = iotdev.searchSerial(device.object()["serial"].toString().toStdString());
@@ -287,11 +238,7 @@ bool Model::removeDevice(const std::string &json_device){
 const std::string Model::getSerializzation() const{
     return this->iotdev.serialize();
 }
-/**
- * @brief Model::getDeviceStatus
- * @param index
- * @return
- */
+
 const std::string Model::getDeviceStatus(const int index) const{
     const IoT* device = (iotdev[index]);
     return device->getStatus().toJson().toStdString();

@@ -25,17 +25,65 @@ private:
 private slots:
     void resetAeEW();
 public:
-    explicit MainContent(QModel* eData=nullptr, QWidget *parent = nullptr);
+    /**
+     * Constructor that require the QModel
+     * @brief MainContent
+     * @param eData
+     * @param parent
+     */
+    explicit MainContent(QModel* eData, QWidget *parent = nullptr);
     ~MainContent();
+
+    /**
+     * load the file in the filepath
+     * @brief load
+     * @param filepath
+     */
     void load(QString filepath);
+    /**
+     * save the file in the filepath
+     * @brief save
+     * @param filepath
+     */
     void save(QString filepath="");
+    /**
+     * @brief size
+     * @return
+     */
     int size();
 public slots:
+    /**
+     * shows the interactiveiot interface, the string is requred to edit the IoT device
+     * @brief showEditOrAddEntryDialog
+     * @param device
+     */
     void showEditOrAddEntryDialog(QString device="");
+    /**
+     * show the interface to add an IoT device
+     * @brief showAddEntryDialog
+     */
     void showAddEntryDialog();
+    /**
+     * adds an entry to the model
+     * @brief addEntry
+     * @param device
+     */
     void addEntry(QString device);
+    /**
+     * edit an entry in the model
+     * @brief editEntry
+     * @param device
+     */
     void editEntry(QString device);
+    /**
+     * delete the entry from the model
+     * @brief removeEntry
+     */
     void removeEntry();
+    /**
+     * call the showEditOrAddEntryDialog with the selected row
+     * @brief editSelectedRow
+     */
     void editSelectedRow();
 
 signals:

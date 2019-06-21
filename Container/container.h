@@ -1,8 +1,13 @@
+/**
+  * @file container.h
+  * @class Container<T>
+  * @brief Container<T> is a circular data structure
+  * @package IoT
+  * @author Gianmarco Pettinato
+  */
 #ifndef CONTAINER_H
 #define CONTAINER_H
 #include <iostream>
-#include <signal.h>
-#include <typeinfo>
 template<class T> class Container{
 private:
     friend class Iterator;
@@ -14,26 +19,36 @@ private:
         Node* previous;
         Node* next;
         /**
-     * @brief Node
-     * @param fData
-     * @param fPrevious
-     * @param fNext
-     */
-        Node(const T& fData,Node* fPrevious=nullptr,Node* fNext=nullptr):first(false){
+        * Complete constructor
+        * @brief Node
+        * @param fData
+        * @param fPrevious
+        * @param fNext
+        */
+        Node(const T& fData,Node* fPrevious,Node* fNext):first(false){
             data = fData;
             previous = fPrevious;
             next = fNext;
         }
 
         /**
-     * @brief Node
-     * @param c
-     */
+         *
+         * Copy constructor
+         *
+         * @brief Node
+         * @param c
+         */
         Node(const Node& c):first(c.first){
             data = c.data;
             this->previous = c.previous;
             this->next = c.next;
         }
+        /**
+         *
+         * Default constructor should be used only as first node
+         *
+         * @brief Node
+         */
         Node():first(true){
             previous = this;
             next = this;
@@ -46,12 +61,17 @@ private:
         }
     };
     /**
+     * private method that returns the element at i posizione
      * @brief getElement
      * @param i
-     * @return
+     * @return returns the i element
      */
     Node* getElement(const int& i) const;
     /**
+     *
+     * private method that returns the element at i position
+     * the method starts from the end of the chain
+     *
      * @brief getElementFromTop
      * @param i
      * @return
@@ -64,6 +84,10 @@ private:
      */
     Node* getElementFromStart(const int& i) const;
     /**
+     *
+     * private method that returns the element at i position
+     * the method starts from the start of the chain
+     *
      * @brief insert
      * @param node
      * @param value
@@ -71,6 +95,9 @@ private:
     void insert(Node* node, const T& value);
 
     /**
+     *
+     * private method that delete the passed element and rebuild the chain
+     *
      * @brief deleteNode
      * @param toDelete
      */
@@ -85,6 +112,9 @@ public:
         mutable Node* current;
         const Container<T>* container;
         /**
+         *
+         * constructor recallabe only from the the superior class
+         *
          * @brief Iterator
          * @param eContainer
          * @param startNode
@@ -93,13 +123,20 @@ public:
 
         void invalidIterator() const;
     public:
+
         /**
+         *
+         * Base constructor
+         *
          * @brief Iterator
          */
 
         Iterator();
 
         /**
+         *
+         * Copy constructors
+         *
          * @brief Iterator
          * @param e
          */
@@ -108,43 +145,52 @@ public:
 
 
         /**
+         * moves the iterator backwards
          * @brief operator --
          */
         void operator--(int) const;
         /**
+         * moves the iterator forward
          * @brief operator ++
          */
         void operator++(int) const;
 
         /**
+         * dereference the content of Node T
          * @brief operator *
-         * @return
+         * @return T
          */
         const T& operator*() const;
+
         /**
+         * returns the content of Node
          * @brief getData
-         * @return
+         * @return T
          */
         const T& getData() const;
 
         /**
+         * replace the content of node
          * @brief operator =
          * @param data
          */
         void operator=(const T* data);
         /**
+         * compares the current node content iterator with the one in argument
          * @brief operator ==
          * @param it
          * @return
          */
         bool operator==(const Iterator& it) const;
         /**
+         * compares the current node content iterator with the one in argument
          * @brief operator ==
          * @param v
          * @return
          */
         bool operator==(const T* v) const;
         /**
+         * compares the current node content iterator with the one in argument
          * @brief operator !=
          * @param v
          * @return
@@ -152,27 +198,35 @@ public:
         bool operator!=(const T* v) const;
     };
     /**
+     * Base constructor
      * @brief Container
      */
     Container();
     /**
+     * Copy constructor
+     * does not perfom a deepcopy
      * @brief Container
      * @param c
      */
     Container(const Container<T>& c);
     /**
+     * Copy constructor
+     * does not perfom a deepcopy
      * @brief Container
      * @param c
      */
     Container(const Container<T>* c);
 
     /**
+     * clones the current Container
+     * does perfom a deepcopy
      * @brief clone
      * @return
      */
     Container<T>* clone() const;
 
     /**
+     * insert T in the front of the data structure
      * @brief push_front
      * @param value
      */
@@ -180,11 +234,13 @@ public:
     void pushFront(const T& value);
 
     /**
+     * insert T in the back of the data structure
      * @brief push_back
      * @param value
      */
     void pushBack(const T& value);
     /**
+     * returns the iterator for the T wanted
      * @brief search
      * @param value
      * @return
@@ -192,6 +248,7 @@ public:
     const Iterator& search(const T& value) const;
 
     /**
+     * insert T in the i position
      * @brief insert
      * @param i
      * @param value
@@ -199,34 +256,43 @@ public:
     void insert(const int i, const T& value);
 
     /**
+     * insert T after the iterator
      * @brief insertAfterIterator
      * @param it
      */
     void insertAfterIterator(const Iterator& it, const T& value);
 
     /**
+     * returns the content of the node in index position
      * @brief operator []
      * @param index
      * @return
      */
     const T& operator[](int index) const;
+
     /**
+     * deletes the element at i position.
+     * if T is a pointer does not perfrom deep delete;
      * @brief deleteElementAt
      * @param i
      */
     void deleteElementAt(int i);
 
     /**
+     * deletes the element at the iterator position if is valid.
+     * if T is a pointer does not perfrom deep delete;
      * @brief deleteElementAt
      * @param it
      */
     void deleteElementAt(const Iterator& it);
     /**
+     * returns the iterator at the start
      * @brief getIterator
      * @return
      */
     Iterator* getIterator();
     /**
+     * returns the const iterator at the start
      * @brief getConstInterator
      * @return const Iterator
      */
@@ -234,6 +300,7 @@ public:
     const Iterator* getConstIterator() const;
 
     /**
+     * returns the const iterator at the index
      * @brief getConstInteratorAt
      * @param index
      * @return const Iterator
@@ -241,6 +308,7 @@ public:
     const Iterator* getConstIteratorAt(int index =0) const;
 
     /**
+     * returns the iterator at the index position
      * @brief getIteratorAt
      * @param index
      * @return
@@ -254,9 +322,7 @@ public:
 
     ~Container();
 };
-/***
- * CONTAINER DEFINITION *
- * */
+
 // PUBLIC METHODS
 
 template <class T> Container<T>::Container():handle(new Container<T>::Node()){
@@ -399,10 +465,6 @@ template <class T> void Container<T>::deleteNode(Node* toDelete){
     cSize--;
 }
 
-/***
- * ---ITERATOR DEFINITION---
-**/
-
 //PRIVATE METHODS
 
 template <class T> Container<T>::Iterator::Iterator(const Container<T>* eContainer, Node* startNode):container(eContainer){
@@ -417,23 +479,13 @@ template <class T> void Container<T>::Iterator::invalidIterator() const{
         throw std::domain_error("Iterator not valid");
 }
 
-/**
- * @brief Iterator
- */
+
 //PUBLIC METHODS
 template <class T> Container<T>::Iterator::Iterator():container(nullptr),current(nullptr){}
 
-/**
- * @brief Iterator
- * @param e
- */
 template <class T> Container<T>::Iterator::Iterator(const Iterator& e):container(e.container){ current = e.current;}
 template <class T> Container<T>::Iterator::Iterator(const Iterator* e):container(e->container){ current = e->current;}
 
-
-/**
- * @brief operator --
- */
 template <class T> void Container<T>::Iterator::operator--(int) const{
     invalidIterator();
     if(current){
@@ -445,9 +497,7 @@ template <class T> void Container<T>::Iterator::operator--(int) const{
         current = container->handle->previous;
     }
 }
-/**
- * @brief operator ++
- */
+
 template <class T> void Container<T>::Iterator::operator++(int) const{
     invalidIterator();
     if(current){
@@ -460,27 +510,16 @@ template <class T> void Container<T>::Iterator::operator++(int) const{
     }
 }
 
-/**
- * @brief operator *
- * @return
- */
 template <class T> const T& Container<T>::Iterator::operator*() const{
     invalidIterator();
     return (current->data);
 }
-/**
- * @brief getData
- * @return
- */
+
 template <class T> const T& Container<T>::Iterator::getData() const{
     invalidIterator();
     return (current->data);
 }
 
-/**
- * @brief operator =
- * @param data
- */
 template <class T> void Container<T>::Iterator::operator=(const T* data){
     invalidIterator();
     if(current){
@@ -491,31 +530,19 @@ template <class T> void Container<T>::Iterator::operator=(const T* data){
         current = temp;
     }
 }
-/**
- * @brief operator ==
- * @param it
- * @return
- */
+
 template <class T> bool Container<T>::Iterator::operator==(const Iterator& it) const{
     invalidIterator();
     return ((container==it.container) && (current == it.current));
 }
-/**
- * @brief operator ==
- * @param v
- * @return
- */
+
 template <class T> bool Container<T>::Iterator:: operator==(const T* v) const{
     invalidIterator();
     if((current == nullptr) && (v == nullptr))
         return true;
     return (&current->data == v);
 }
-/**
- * @brief operator !=
- * @param v
- * @return
- */
+
 template <class T> bool  Container<T>::Iterator::operator!=(const T* v) const{
     return !(*this == v);
 }
