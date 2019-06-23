@@ -49,13 +49,22 @@ public:
     const QJsonDocument& getDeviceInstruction() const override;
     /**
      *
+     * virtual method used to compare two IoT devices
+     * depends on the type of the IoT device
+     *
+     * @brief operator ==
+     * @param dev
+     * @return
+     */
+    bool operator==(const IoT& dev) const override;
+    /**
+     *
      * specific Shutter implementation of the virtual method IoT::setDevice()
      * depends on the type of the IoT device
      *
      * @brief setDevice
      * @param instruction
      */
-
     void setDevice(const QJsonDocument& instruction) override;
     /**
      *

@@ -51,6 +51,16 @@ public:
     const QJsonDocument& getDeviceInstruction() const override;
     /**
      *
+     * specific switch implementation of the virtual method IoT::operator==()
+     * depends on the type of the IoT device
+     *
+     * @brief operator ==
+     * @param dev
+     * @return
+     */
+    bool operator==(const IoT& dev) const override;
+    /**
+     *
      * specific DimmerableLight implementation of the virtual method IoT::setDevice()
      * depends on the type of the IoT device
      *

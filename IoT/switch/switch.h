@@ -67,6 +67,16 @@ public:
      * @param instruction
      */
     void setDevice(const QJsonDocument& instruction) override;
+    /**
+     *
+     * specific switch implementation of the virtual method IoT::operator==()
+     * depends on the type of the IoT device
+     *
+     * @brief operator ==
+     * @param dev
+     * @return
+     */
+    bool operator==(const IoT& dev) const override;
 };
 
 #endif // SWITCH_H

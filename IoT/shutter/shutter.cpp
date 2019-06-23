@@ -32,6 +32,13 @@ void Shutter::setDevice(const QJsonDocument& instruction) {
         *status.find("height")=value;
     }
 }
+bool Shutter::operator==(const IoT& dev) const{
+    if(IoT::operator==(dev)){
+        QJsonObject dStatus(dev.getStatus().object());
+        return status["height"].toInt() == dStatus["height"].toInt(-1);
+    }
+    return false;
+}
 
 IoT* Shutter::clone() const{
     return new Shutter(JsonSerialize());

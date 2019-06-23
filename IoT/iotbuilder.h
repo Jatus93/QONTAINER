@@ -58,7 +58,7 @@ public:
     /**
      * default destructor
      */
-    virtual ~IoTBuilder() = default;
+    virtual ~IoTBuilder();
     /**
      * static method that performs a deep clean to the map
      * @brief builderCleaner

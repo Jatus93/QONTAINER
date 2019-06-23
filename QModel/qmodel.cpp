@@ -73,7 +73,6 @@ bool QModel::removeRows(int position, int rows, const QModelIndex &index)
     beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
     for (int row = 0; row < rows; ++row){
-        delete iotdev[position+row];
         iotdev.deleteElementAt(position+row);
     }
     endRemoveRows();

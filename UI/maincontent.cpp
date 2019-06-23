@@ -13,6 +13,7 @@ MainContent::MainContent(QModel* eData,QWidget *parent) : QTabWidget(parent)
     });
     fillTabs();
     addOrEdit = nullptr;
+    researchView = nullptr;
 }
 
 void MainContent::fillTabs(){

@@ -25,7 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES +=
 
 HEADERS += \
-        container.h
+        container.h \
+        smartptr.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

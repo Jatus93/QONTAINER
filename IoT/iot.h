@@ -98,6 +98,16 @@ public:
     const QJsonDocument& getStatus() const;
     /**
      *
+     * virtual method used to compare two IoT devices
+     * depends on the type of the IoT device
+     *
+     * @brief operator ==
+     * @param dev
+     * @return
+     */
+    virtual bool operator==(const IoT& dev) const;
+    /**
+     *
      * virtual method used to set QJsonObject Status
      * depends on the type of the IoT device
      *
@@ -134,7 +144,7 @@ public:
     /**
       * default destructor
       */
-    virtual ~IoT() = default;
+    virtual ~IoT();
 
 };
 #endif // IOT_H

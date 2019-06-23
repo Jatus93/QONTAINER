@@ -9,49 +9,42 @@
 #include <QString>
 #include <QStringList>
 #include <fstream>
-#include "../IoT/iot.h"
+#include <../IoT/iot.h>
 #include <../Container/container.h>
-#include "../IoT/iotbuilder.h"
-#include "../IoT/iotdevices.h"
+#include <../Container/smartptr.h>
+#include <../IoT/iotbuilder.h>
+#include <../IoT/iotdevices.h>
 
 class Model
 {
-protected:
-    /**
-     * @brief The IoTContainer class
-     */
-    class IoTContainer : public Container<IoT*>{
-    public:
-        IoTContainer();
-        void loadFromJson(const std::string& dev);
-        std::string serialize() const;
-        Iterator searchName(std::string name) const;
-        Iterator searchSerial(std::string serial) const;
-        std::string getDevicesForAttribute(std::string attribute) const;
-    };
-    IoTContainer iotdev;
-    static Container<std::string> rooms;
-    static Container<std::string> devices;
-    static std::string currentFilePath;
+private:
+    void fillContainer(const std::string& dev);
+    std::string filterDevicesForAttribute(std::string attribute) const;
+    const Container<SmartPtr<IoT>>::Iterator& searchSerial(const std::string serial) const;
+    Container<std::string> rooms;
+    Container<std::string> devices;
     void fillDeviceContainer();
+protected:
+    std::string currentFilePath;
+    Container<SmartPtr<IoT>> iotdev;
 public:
     /**
      * @brief Model
      * @param filePath
      */
-    Model(const std::string& filePath=currentFilePath);
+    Model(const std::string& filePath="");
     /**
      * @brief load
      * @param filePath
      * @return
      */
-    bool load(const std::string& filePath=currentFilePath) ;
+    bool load(const std::string& filePath="") ;
     /**
      * @brief save
      * @param filePath
      * @return
      */
-    bool save(const std::string& filePath=currentFilePath) const;
+    bool save(const std::string& filePath="") const;
     /**
      * @brief addDevice
      * @param json_device
@@ -109,7 +102,7 @@ public:
      * @brief addRoom
      * @param room
      */
-    static void addRoom(const std::string& room);
+    void addRoom(const std::string& room);
     /**
      * @brief delRoom
      * @param room

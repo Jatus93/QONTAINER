@@ -38,6 +38,14 @@ void DimmerableLight::setDevice(const QJsonDocument& instruction) {
         status["power"] = 0;
 }
 
+bool DimmerableLight::operator==(const IoT& dev) const{
+    if(IoT::operator==(dev)){
+        QJsonObject dStatus(dev.getStatus().object());
+        return (status["power"].toInt() == dStatus["power"].toInt(-1)) && (status["brightness"].toInt() == dStatus["brightness"].toInt(-1));
+    }
+    return false;
+}
+
 IoT* DimmerableLight::clone() const{
     return new DimmerableLight(JsonSerialize());
 }

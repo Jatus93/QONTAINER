@@ -38,3 +38,11 @@ const QJsonDocument& Switch::getDeviceInstruction() const{
 IoT* Switch::clone() const{
     return new Switch(JsonSerialize());
 }
+
+bool Switch::operator==(const IoT& dev) const{
+    if(IoT::operator==(dev)){
+        QJsonObject dStatus(dev.getStatus().object());
+        return status["power"].toInt() == dStatus["power"].toInt(-1);
+    }
+    return false;
+}

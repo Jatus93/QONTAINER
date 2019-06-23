@@ -148,26 +148,26 @@ public:
          * moves the iterator backwards
          * @brief operator --
          */
-        void operator--(int) const;
+        Iterator operator--(int) const;
         /**
          * moves the iterator forward
          * @brief operator ++
          */
-        void operator++(int) const;
+        Iterator operator++(int) const;
 
         /**
          * dereference the content of Node T
          * @brief operator *
          * @return T
          */
-        const T& operator*() const;
+        T& operator*() const;
 
         /**
          * returns the content of Node
          * @brief getData
          * @return T
          */
-        const T& getData() const;
+        T& getData() const;
 
         /**
          * replace the content of node
@@ -268,7 +268,7 @@ public:
      * @param index
      * @return
      */
-    const T& operator[](int index) const;
+    T& operator[](int index) const;
 
     /**
      * deletes the element at i position.
@@ -319,6 +319,11 @@ public:
      * @return
      */
     int size() const noexcept;
+
+    /**
+     * @brief clear
+     */
+    void clear();
 
     ~Container();
 };
@@ -371,7 +376,7 @@ template <class T> void Container<T>::insertAfterIterator(const Iterator& it, co
     insert(it.current,value);
 }
 
-template <class T> const T& Container<T>::operator[](int index) const{
+template <class T> T& Container<T>::operator[](int index) const{
     if(index >= cSize || index <0)
         throw std::out_of_range("Index is out of range");
     return getElement(index)->data;
@@ -415,10 +420,14 @@ template<class T> int Container<T>::size() const noexcept{
     return cSize;
 }
 
-template <class T> Container<T>::~Container(){
+template <class T> void Container<T>::clear(){
     while(cSize>0){
         deleteElementAt(cSize-1);
     }
+}
+
+template <class T> Container<T>::~Container(){
+    clear();
 }
 
 //PRIVATE METHODS
@@ -486,7 +495,7 @@ template <class T> Container<T>::Iterator::Iterator():container(nullptr),current
 template <class T> Container<T>::Iterator::Iterator(const Iterator& e):container(e.container){ current = e.current;}
 template <class T> Container<T>::Iterator::Iterator(const Iterator* e):container(e->container){ current = e->current;}
 
-template <class T> void Container<T>::Iterator::operator--(int) const{
+template <class T> typename Container<T>::Iterator Container<T>::Iterator::operator--(int) const{
     invalidIterator();
     if(current){
         if(!current->previous->first)
@@ -498,7 +507,7 @@ template <class T> void Container<T>::Iterator::operator--(int) const{
     }
 }
 
-template <class T> void Container<T>::Iterator::operator++(int) const{
+template <class T> typename Container<T>::Iterator Container<T>::Iterator::operator++(int) const{
     invalidIterator();
     if(current){
         if(!current->next->first)
@@ -508,14 +517,15 @@ template <class T> void Container<T>::Iterator::operator++(int) const{
     }else{
         current = container->handle->next;
     }
+    return this;
 }
 
-template <class T> const T& Container<T>::Iterator::operator*() const{
+template <class T> T& Container<T>::Iterator::operator*() const{
     invalidIterator();
     return (current->data);
 }
 
-template <class T> const T& Container<T>::Iterator::getData() const{
+template <class T> T& Container<T>::Iterator::getData() const{
     invalidIterator();
     return (current->data);
 }

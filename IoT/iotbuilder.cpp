@@ -37,3 +37,5 @@ void IoTBuilder::builderCleaner(){
     IoTmap->clear();
     delete IoTmap;
 }
+
+IoTBuilder::~IoTBuilder(){}
