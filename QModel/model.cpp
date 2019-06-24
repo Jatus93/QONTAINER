@@ -196,7 +196,7 @@ const std::string Model::getSerializzation() const{
     std::string devices("{");
     auto it = iotdev.getConstIterator();
     int i = 0;
-    while(it!=nullptr){
+    while((*it)!=nullptr){
         devices +='"' + std::to_string(i++)+ '"' + ":" + (**it)->JsonSerialize().toJson().toStdString();
         it++;
         if(it!=nullptr)
