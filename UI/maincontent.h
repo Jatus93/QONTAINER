@@ -78,7 +78,7 @@ public slots:
      * delete the entry from the model
      * @brief removeEntry
      */
-    void removeEntry();
+    void removeEntry(QTableView* table = nullptr);
     /**
      * call the showEditOrAddEntryDialog with the selected row
      * @brief editSelectedRow

@@ -19,9 +19,9 @@ MainWindow::MainWindow()
     QGridLayout *layout = new QGridLayout;
     infoLabel = new QLabel(this);
     infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));
-    QPushButton* addIot = new QPushButton(tr("aggiungi disposito"),this);
+    QPushButton* addIot = new QPushButton(tr("aggiungi dispositivo"),this);
     addIot->setMaximumWidth(150);
-    QPushButton* searchIot = new QPushButton(tr("cerca disposito"),this);
+    QPushButton* searchIot = new QPushButton(tr("cerca dispositivi"),this);
     searchIot->setMaximumWidth(150);
     layout->addWidget(infoLabel,0,0,1,1);
     layout->addWidget(addIot,0,1,1,1);
@@ -35,7 +35,7 @@ MainWindow::MainWindow()
     connect(addIot,SIGNAL(clicked(bool)),mainContent,SLOT(showAddEntryDialog()));
     connect(mainContent,&MainContent::update,this,[this](){infoLabel->setText(tr("Ci sono ")+QString::number(mainContent->size())+tr(" IoT dispositivi online"));});
 
-    setWindowTitle(tr("QContainer"));
+    setWindowTitle(tr("IoT Manager"));
     setMinimumSize(640, 480);
     resize(840, 780);
 }
@@ -53,7 +53,6 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 
 void MainWindow::open()
 {
-    //infoLabel->setText(tr("Invoked <b>File|Open</b>"));
     QString fileName = QFileDialog::getOpenFileName(this, ("Open File"),
                                                     "/home",
                                                     ("JSonFile (*.json)"));
@@ -71,6 +70,10 @@ void MainWindow::saveAs()
     QString fileName = QFileDialog::getSaveFileName(this,("Save as"),
                                                     "/home",
                                                     ("JSonFile (*.json)"));
+    QFileInfo out(fileName);
+    if(out.suffix().isEmpty())
+        fileName+=".json";
+
     if(!fileName.isEmpty())
         mainContent->save(fileName);
 }
@@ -98,12 +101,10 @@ void MainWindow::createActions()
     connect(exitAct, &QAction::triggered, this, &QWidget::close);
 
     removeAct = new QAction(tr("&Rimuovi"),this);
-    removeAct->setShortcut(QKeySequence::Delete);
     removeAct->setStatusTip(tr("Rimuov l'elmento selezionato"));
-    connect(removeAct, &QAction::triggered,this->mainContent,&MainContent::removeEntry);
+    connect(removeAct, SIGNAL(triggered()),mainContent,SLOT(removeEntry()));
 
     editAct = new QAction(tr("&Modifica"),this);
-    editAct->setShortcut(QKeySequence::Replace);
     editAct->setStatusTip(tr("Modifica l'elemento selezionato"));
     connect(editAct, SIGNAL(triggered()),mainContent,SLOT(editSelectedRow()));
 

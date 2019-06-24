@@ -126,8 +126,11 @@ void MainContent::editEntry(QString device){
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
-    if(selectionModel->selectedRows().empty())
-        selectionModel = researchView->findChild<QTableView *>()->selectionModel();
+    if(selectionModel->selectedRows().empty()){
+        temp = researchView->findChild<QTableView *>();
+        proxy = static_cast<QSortFilterProxyModel*>(temp->model());
+        selectionModel = temp->selectionModel();
+    }
     QModelIndex index = selectionModel->selectedRows().first();
     proxy->setData(index,device,Qt::EditRole);
     addOrEdit->close();
@@ -155,16 +158,17 @@ void MainContent::editSelectedRow(QTableView* table){
         }
     }
 }
-void MainContent::removeEntry(){
-
+void MainContent::removeEntry(QTableView* table){
     QTableView *temp = static_cast<QTableView*>(currentWidget());
+    if(table != nullptr)
+        temp = table;
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
     QModelIndexList indexes = selectionModel->selectedRows();
-    foreach (QModelIndex index, indexes) {
-        int row = index.row();
-        proxy->removeRows(row, 1, QModelIndex());
+    for(int i = 0; i<indexes.size();i++){
+        QModelIndex index = indexes[i];
+        proxy->removeRows(index.row(), 1, QModelIndex());
     }
     emit update();
 
@@ -172,9 +176,11 @@ void MainContent::removeEntry(){
 
 void MainContent::showResearchDialog(){
     if(researchView == nullptr)
-        researchView = new ResearchView(data,this);
+        researchView = new ResearchView(data);
     researchView->show();
     connect(researchView,SIGNAL(doubleClicked(QTableView*)),this,SLOT(editSelectedRow(QTableView*)));
+    connect(researchView,SIGNAL(remove(QTableView*)),this,SLOT(removeEntry(QTableView*)));
+    connect(researchView,SIGNAL(edit(QTableView*)),this,SLOT(editSelectedRow(QTableView*)));
     connect(researchView,&ResearchView::closing,this,[this](){researchView->close();delete researchView; researchView = nullptr;});
 }
 

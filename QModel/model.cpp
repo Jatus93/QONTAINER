@@ -105,16 +105,18 @@ bool Model::load(const std::string &filePath){
 
 bool Model::save(const std::string &filePath) const{
     bool status = false;
-    if(!filePath.empty()){
-        std::ofstream IoTfile(filePath);
-        if(IoTfile.is_open()){
-            IoTfile<<getSerializzation();
-            status = true;
-        }else {
-            throw std::runtime_error("could not open file path");
-        }
-        IoTfile.close();
+    std::string path = filePath;
+    if(path.empty()){
+       path = currentFilePath;
     }
+    std::ofstream IoTfile(path);
+    if(IoTfile.is_open()){
+        IoTfile<<getSerializzation();
+        status = true;
+    }else {
+        throw std::runtime_error("could not open file path");
+    }
+    IoTfile.close();
     return status;
 }
 
@@ -167,15 +169,18 @@ bool Model::setDeviceStatus(const std::string& status, int index){
         }
     }
     QJsonObject jDevice(QJsonDocument::fromJson(status.c_str()).object());
-    try {
-        (*device)->setName(jDevice["name"].toString().toStdString());
-        (*device)->setRoom(jDevice["room"].toString().toStdString());
-        (*device)->setDevice(QJsonDocument(jDevice["status"].toObject()));
-    } catch (const std::invalid_argument & e) {
-        Q_UNUSED(e)
+    if(jDevice["serial"].toString().toStdString() != (*device)->getSerial())
         result = false;
+    else {
+        try {
+            (*device)->setName(jDevice["name"].toString().toStdString());
+            (*device)->setRoom(jDevice["room"].toString().toStdString());
+            (*device)->setDevice(QJsonDocument(jDevice["status"].toObject()));
+        } catch (const std::invalid_argument & e) {
+            Q_UNUSED(e)
+            result = false;
+        }
     }
-
     return  result;
 }
 

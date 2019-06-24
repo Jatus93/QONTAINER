@@ -1,7 +1,7 @@
 #ifndef RESARCHVIEW_H
 #define RESARCHVIEW_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QTableView>
 #include <QSortFilterProxyModel>
 #include <QLabel>
@@ -10,12 +10,22 @@
 #include <QLayout>
 #include <QHeaderView>
 #include <customdelegate.h>
+#include <QMenu>
+#include <QContextMenuEvent>
 #include <../QModel/qmodel.h>
-class ResearchView : public QDialog
+class ResearchView : public QWidget
 {
     Q_OBJECT
+protected:
+#ifndef QT_NO_CONTEXTMENU
+    void contextMenuEvent(QContextMenuEvent *event) override;
+#endif // QT_NO_CONTEXTMENU
 private:
+    QAction* editAct;
+    QAction* removeAct;
     QSortFilterProxyModel* model;
+    QTableView * deviceTable;
+    void setupAct();
 private slots:
     /**
      * Changes the text researched
@@ -50,6 +60,14 @@ signals:
      * @param table
      */
     void doubleClicked(QTableView* table);
+    /**
+     * @brief edit
+     */
+    void edit(QTableView* table);
+    /**
+     * @brief remove
+     */
+    void remove(QTableView* table);
     /**
      * @brief closing
      */

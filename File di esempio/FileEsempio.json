@@ -1,0 +1,37 @@
+{"0":{
+    "class": "switch",
+    "name": "Luce Corridoio",
+    "room": "Corridoio",
+    "serial": "1010102292",
+    "status": {
+        "power": 0
+    }
+}
+,"1":{
+    "class": "shutter",
+    "name": "Tapparella Studio",
+    "room": "Studio",
+    "serial": "CCCCCC10",
+    "status": {
+        "height": 0
+    }
+}
+,"2":{
+    "class": "shutter",
+    "name": "Tapparella Cucina",
+    "room": "Cucina",
+    "serial": "CCCCCC11",
+    "status": {
+        "height": 0
+    }
+}
+,"3":{
+    "class": "shutter",
+    "name": "Tapparella Sala",
+    "room": "Sala",
+    "serial": "CCCCCC12",
+    "status": {
+        "height": 0
+    }
+}
+}

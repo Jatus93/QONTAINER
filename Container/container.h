@@ -429,6 +429,7 @@ template <class T> void Container<T>::clear(){
 
 template <class T> Container<T>::~Container(){
     clear();
+    delete handle;
 }
 
 //PRIVATE METHODS
