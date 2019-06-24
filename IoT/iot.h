@@ -9,6 +9,7 @@
 #define IOT_H
 
 #include <string>
+#include <stdexcept>
 #include <QJsonDocument>
 #include <QJsonObject>
 
