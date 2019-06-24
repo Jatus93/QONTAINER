@@ -86,7 +86,7 @@ bool QModel::setData(const QModelIndex &index, const QVariant &value, int role){
         int row = index.row();
         result = setDeviceStatus(value.toString().toStdString(),row);
     }
-    if(index.isValid() && role == Qt::UserRole){
+    if(role == Qt::DisplayRole){
         result = addDevice(value.toString().toStdString());
     }
     emit dataChanged(index,index,{Qt::EditRole});

@@ -87,10 +87,10 @@ public:
 template <class T> SmartPtr<T>::SmartPtr(T* mPointer):pointer(mPointer){}
 
 template <class T> SmartPtr<T>::SmartPtr(const SmartPtr<T>& sptr){
-    pointer = sptr.pointer;
+    pointer = sptr.pointer->clone();
 }
 
-template <class T> SmartPtr<T>::SmartPtr(const SmartPtr<T>&& sptr):SmartPtr(sptr){};
+template <class T> SmartPtr<T>::SmartPtr(const SmartPtr<T>&& sptr):SmartPtr(sptr.pointer->clone()){};
 
 template <class T> T& SmartPtr<T>::operator*() const{
     return *pointer;

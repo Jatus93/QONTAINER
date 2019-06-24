@@ -39,7 +39,7 @@ void MainContent::fillTabs(){
             tableView->horizontalHeader()->setStretchLastSection(true);
             tableView->verticalHeader()->hide();
             tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-            tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+            tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
             connect(tableView->selectionModel(),&QItemSelectionModel::selectionChanged,this, &MainContent::selectionChanged);
             connect(this, &QTabWidget::currentChanged, this, [this](int tabIndex) {
                 auto *tableView = qobject_cast<QTableView *>(widget(tabIndex));
@@ -112,7 +112,7 @@ void MainContent::addEntry(QString device){
     if(QJsonDocument::fromJson(string_data.toUtf8()).object()["serial"].toString()!=jDevice.object()["serial"].toString()){
         data->insertRows(0,1,QModelIndex());
         QModelIndex index = data->index(0,0,QModelIndex());
-        data->setData(index,device,Qt::UserRole);
+        data->setData(index,device,Qt::DisplayRole);
         addOrEdit->close();
         addOrEdit = nullptr;
         fillTabs();
@@ -143,13 +143,17 @@ void MainContent::editSelectedRow(QTableView* table){
         temp = table;
     QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
-
-    QModelIndexList indexes = selectionModel->selectedRows();
-    foreach (QModelIndex index, indexes) {
-        auto ldata = proxy->data(index,Qt::EditRole);
-        showEditOrAddEntryDialog(ldata.value<QString>());
+    int size = selectionModel->selectedRows().size();
+    if(size>0){
+        if(size > 1){
+            QMessageBox::information(this,tr("Errore di selezione"),tr("Si può modificare solo un elemento per volta"));
+        }else {
+            QModelIndex index = selectionModel->selectedRows().first();
+            auto ldata = proxy->data(index,Qt::EditRole);
+            showEditOrAddEntryDialog(ldata.value<QString>());
+            emit update();
+        }
     }
-    emit update();
 }
 void MainContent::removeEntry(){
 

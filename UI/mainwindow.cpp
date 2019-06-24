@@ -100,7 +100,7 @@ void MainWindow::createActions()
     removeAct = new QAction(tr("&Rimuovi"),this);
     removeAct->setShortcut(QKeySequence::Delete);
     removeAct->setStatusTip(tr("Rimuov l'elmento selezionato"));
-    connect(removeAct, SIGNAL(triggered()),mainContent,SLOT(removeEntry()));
+    connect(removeAct, &QAction::triggered,this->mainContent,&MainContent::removeEntry);
 
     editAct = new QAction(tr("&Modifica"),this);
     editAct->setShortcut(QKeySequence::Replace);

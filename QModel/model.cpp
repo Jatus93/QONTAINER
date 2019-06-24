@@ -181,7 +181,7 @@ bool Model::setDeviceStatus(const std::string& status, int index){
 
 bool Model::removeDevice(const std::string &json_device){
     QJsonDocument device = QJsonDocument::fromJson(json_device.c_str());
-    const Container<SmartPtr<IoT>>::Iterator it = searchSerial(device.object()["serial"].toString().toStdString());
+    const Container<SmartPtr<IoT>>::Iterator& it = searchSerial(device.object()["serial"].toString().toStdString());
     try{
         delete &(it.getData());
         iotdev.deleteElementAt(it);
@@ -194,10 +194,10 @@ bool Model::removeDevice(const std::string &json_device){
 
 const std::string Model::getSerializzation() const{
     std::string devices("{");
-    auto it = iotdev.getConstIterator();
+    const Container<SmartPtr<IoT>>::Iterator& it = iotdev.getConstIterator();
     int i = 0;
-    while((*it)!=nullptr){
-        devices +='"' + std::to_string(i++)+ '"' + ":" + (**it)->JsonSerialize().toJson().toStdString();
+    while((it)!=nullptr){
+        devices +='"' + std::to_string(i++)+ '"' + ":" + (*it)->JsonSerialize().toJson().toStdString();
         it++;
         if(it!=nullptr)
             devices += ",";
