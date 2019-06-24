@@ -8,6 +8,7 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 #include <iostream>
+#include <stdexcept>
 template<class T> class Container{
 private:
     friend class Iterator;
