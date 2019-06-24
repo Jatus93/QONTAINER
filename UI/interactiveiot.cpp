@@ -230,10 +230,7 @@ void InteractiveIot::statusProxySlider(const int status){
     devcurrent["status"] = cstatus;
     setStatus(QJsonDocument(cstatus));
 }
-void InteractiveIot::closeEvent(QCloseEvent *event){
-    emit closing();
-    QWidget::closeEvent(event);
-}
+
 InteractiveIot::~InteractiveIot(){
 
     if(statusSliders){

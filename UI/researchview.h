@@ -29,6 +29,11 @@ private slots:
      * @param selectionIndex
      */
     void selectionChanged(const int& selectionIndex);
+    /**
+     * @brief closeEvent
+     * @param event
+     */
+    void closeEvent(QCloseEvent* event) override;
 public:
     /**
      * Constructor for the research view that builds a Modal Window
@@ -45,6 +50,10 @@ signals:
      * @param table
      */
     void doubleClicked(QTableView* table);
+    /**
+     * @brief closing
+     */
+    void closing();
 
 public slots:
 };

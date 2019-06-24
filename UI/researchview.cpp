@@ -44,3 +44,8 @@ void ResearchView::stringChanged(const QString & rTerm){
 void ResearchView::selectionChanged(const int& selectionIndex){
     model->setFilterKeyColumn(selectionIndex);
 }
+
+void ResearchView::closeEvent(QCloseEvent *event){
+    emit closing();
+    QDialog::closeEvent(event);
+}

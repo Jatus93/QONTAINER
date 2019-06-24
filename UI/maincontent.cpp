@@ -88,23 +88,20 @@ void MainContent::showEditOrAddEntryDialog(QString device){
     QWidget * parent = this;
     if(researchView)
         parent = researchView;
-    if(addOrEdit == nullptr){
-        addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,parent);
-        if(device != ""){
-            addOrEdit->setWindowTitle(tr("Modifica il dispositivo"));
-            connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(editEntry(QString)));
-        }else {
-            addOrEdit->setWindowTitle(tr("Aggiungi dispotivo"));
-            connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(addEntry(QString)));
-        }
-        this->stackUnder(addOrEdit);
-        connect(addOrEdit,SIGNAL(closing()),this,SLOT(resetAeEW()));
-        addOrEdit->show();
-    }else {
-        QMessageBox messageBox;
-        messageBox.critical(nullptr,"Errore","Tutte le operazioni devono essere completate prima di poter procedere.");
-        messageBox.setFixedSize(500,200);
+    if(addOrEdit){
+        addOrEdit->close();
+        delete addOrEdit;
     }
+    addOrEdit = new InteractiveIot (QString::fromStdString(data->getAllRooms()),device,parent);
+    if(!device.isEmpty()){
+        addOrEdit->setWindowTitle(tr("Modifica il dispositivo"));
+        connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(editEntry(QString)));
+    }else {
+        addOrEdit->setWindowTitle(tr("Aggiungi dispotivo"));
+        connect(addOrEdit,SIGNAL(newDevice(QString)),this,SLOT(addEntry(QString)));
+    }
+    addOrEdit->show();
+
 }
 void MainContent::showAddEntryDialog(){
     showEditOrAddEntryDialog();
@@ -154,9 +151,6 @@ void MainContent::editSelectedRow(QTableView* table){
     }
     emit update();
 }
-void MainContent::resetAeEW(){
-    addOrEdit = nullptr;
-}
 void MainContent::removeEntry(){
 
     QTableView *temp = static_cast<QTableView*>(currentWidget());
@@ -173,9 +167,11 @@ void MainContent::removeEntry(){
 }
 
 void MainContent::showResearchDialog(){
-    researchView = new ResearchView(data,this);
+    if(researchView == nullptr)
+        researchView = new ResearchView(data,this);
     researchView->show();
     connect(researchView,SIGNAL(doubleClicked(QTableView*)),this,SLOT(editSelectedRow(QTableView*)));
+    connect(researchView,&ResearchView::closing,this,[this](){researchView->close();delete researchView; researchView = nullptr;});
 }
 
 int MainContent::size(){

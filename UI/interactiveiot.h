@@ -31,14 +31,12 @@ public:
     ~InteractiveIot();
 signals:
     void newDevice(QString device);
-    void closing();
 private:
     QBoxLayout* createGroup(QWidget* first, QWidget* second);
     QLabel* setQLabel(QString text);
     void setUpDefault();
     void clearLayout(QLayout* to_clean);
     void lupdate();
-    void closeEvent(QCloseEvent* event);
 
 private slots:
     void setStatusEditor();

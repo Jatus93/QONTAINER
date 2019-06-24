@@ -23,8 +23,6 @@ private:
     QSortFilterProxyModel *proxyModel;
     QMap<QString,QTableView*> tabIndex;
     void redrawAll();
-private slots:
-    void resetAeEW();
 public:
     /**
      * Constructor that require the QModel
