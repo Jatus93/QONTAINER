@@ -97,12 +97,12 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Chiude l'applicazione, senza salvare"));
     connect(exitAct, &QAction::triggered, this, &QWidget::close);
 
-    removeAct = new QAction(tr("&Rimuovi"));
+    removeAct = new QAction(tr("&Rimuovi"),this);
     removeAct->setShortcut(QKeySequence::Delete);
     removeAct->setStatusTip(tr("Rimuov l'elmento selezionato"));
     connect(removeAct, SIGNAL(triggered()),mainContent,SLOT(removeEntry()));
 
-    editAct = new QAction(tr("&Modifica"));
+    editAct = new QAction(tr("&Modifica"),this);
     editAct->setShortcut(QKeySequence::Replace);
     editAct->setStatusTip(tr("Modifica l'elemento selezionato"));
     connect(editAct, SIGNAL(triggered()),mainContent,SLOT(editSelectedRow()));
